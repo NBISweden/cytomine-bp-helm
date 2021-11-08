@@ -1,0 +1,13 @@
+{{ if or .Values.core.deploy .Values.slurm.deploy .Values.software_router.deploy }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "cytomine.name" . }}-singularity-claim
+spec:
+  storageClassName: {{ .Values.readManyStorageClass }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.singularityStorage }}
+{{ end }}

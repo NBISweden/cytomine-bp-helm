@@ -1,0 +1,14 @@
+{{ if .Values.ims.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cytomine.name" . }}-ims
+spec:
+  selector:
+    app: {{ include "cytomine.name" . }}-ims
+  ports:
+    - name: http
+      port: {{ .Values.ims.port }}
+      targetPort: 8080
+      protocol: TCP
+{{ end }}

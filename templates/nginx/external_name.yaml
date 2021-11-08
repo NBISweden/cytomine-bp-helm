@@ -1,0 +1,10 @@
+{{ if .Values.nginx.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cytomine.name" . }}-nginx
+  namespace: kube-system
+spec:
+  type: ExternalName
+  externalName: {{ include "cytomine.name" . }}-nginx.default.svc.cluster.local
+{{ end }}

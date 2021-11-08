@@ -1,0 +1,14 @@
+{{ if .Values.iip_off.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cytomine.name" . }}-iip-official
+spec:
+  selector:
+    app: {{ include "cytomine.name" . }}-iip-official
+  ports:
+    - name: http
+      port: {{ .Values.iip_off.port }}
+      targetPort: {{ .Values.iip_off.port }}
+      protocol: TCP
+{{ end }}

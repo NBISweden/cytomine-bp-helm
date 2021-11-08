@@ -1,0 +1,13 @@
+{{ if .Values.postgresql.deploy }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "cytomine.name" . }}-postgres-claim
+spec:
+  storageClassName: {{ .Values.readOnceStorageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.postgresStorage }}
+{{ end }}

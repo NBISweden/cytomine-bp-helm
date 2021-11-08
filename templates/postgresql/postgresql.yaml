@@ -1,0 +1,72 @@
+{{ if .Values.postgresql.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-postgis
+  labels:
+    role: postgresql
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-postgis
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-postgis
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: postgresql
+        app: {{ template "cytomine.name" . }}-postgis
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: {{ template "cytomine.name" . }}-postgres-claim
+      containers:
+        - name: {{ .Chart.Name }}-postgis
+          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: "/postgres-data/"
+          env:
+          - name: DATA_DIR
+            value: "/var/lib/postgresql/10/main"
+          command: ["/bin/bash"]
+          # if the persistent volume seems empty, copy the data from the default
+          # to the persistent volume, then start postgres using it.
+          args: ["-c", "[ ! -f /postgres-data/PG_VERSION ] && cp -r $DATA_DIR/* /postgres-data; /usr/lib/postgresql/10/bin/postgres -D /postgres-data -c config_file=/etc/postgresql/10/main/postgresql.conf"]
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          securityContext:
+            runAsUser: 105
+          livenessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - psql
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.postgresql.resources | nindent 12 }}
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - psql
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+{{ end }}

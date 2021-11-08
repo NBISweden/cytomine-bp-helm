@@ -1,0 +1,63 @@
+{{ if .Values.iip_cyto.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-iip-cyto
+  labels:
+    role: iip-cyto
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-iip-cyto
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-iip-cyto
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: iip-cyto
+        app: {{ template "cytomine.name" . }}-iip-cyto
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: {{ template "cytomine.name" . }}-image-claim
+        - name: nginx-config
+          configMap:
+            name: {{ include "cytomine.name" . }}-iip-cyto-config
+      containers:
+        - name: {{ .Chart.Name }}-iip-cyto
+          image: "{{ .Values.iip_cyto.image.repository }}:{{ .Values.iip_cyto.image.tag }}"
+          imagePullPolicy: {{ .Values.iip_cyto.image.pullPolicy }}
+          volumeMounts:
+            - name: images
+              mountPath: "/data/images"
+            - name: nginx-config
+              mountPath: /config-temp/nginx.conf.sample
+              subPath: nginx.conf.sample
+          command: ["/bin/sh"]
+          args: ["-c", "cp /config-temp/nginx.conf.sample /tmp/nginx.conf.sample && /tmp/deploy.sh"]
+          env:
+          - name: NB_IIP_PROCESS
+            value: "10"
+          - name: MEMCACHED_SERVERS
+            value: {{ template "cytomine.name" . }}-memcached:{{ .Values.memcached.port }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.iip_cyto.port }}
+          resources:
+            {{- toYaml .Values.iip_cyto.resources | nindent 12 }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+{{ end }}

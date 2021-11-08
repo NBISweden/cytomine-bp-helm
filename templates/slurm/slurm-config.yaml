@@ -1,0 +1,11 @@
+{{ if .Values.slurm.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-slurm-config
+data:
+  slurm.conf: |-
+    {{ (tpl (.Files.Get "configs/slurm.conf") . ) | nindent 4 }}
+  authorized_keys: |-
+    {{ .Files.Get "configs/software_router/ssh_key.pub" | nindent 4 }}
+{{ end }}

@@ -1,0 +1,18 @@
+{{ if .Values.slurm.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: slurm
+spec:
+  selector:
+    app: {{ include "cytomine.name" . }}-slurm
+  ports:
+    - name: http
+      port: {{ .Values.slurm.port }}
+      targetPort: 80
+      protocol: TCP
+    - name: ssh
+      port: {{ .Values.slurm.sshPort }}
+      targetPort: 22
+      protocol: TCP
+{{ end }}
