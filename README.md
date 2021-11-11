@@ -128,7 +128,7 @@ Ensure your Linux OS uses `systemcl`, run the following command
 
 `sudo resolvconf -u`
 
-To verify, run the following command to check if the `\etc\resolv.conf` is updated with the minikube ip.
+To verify, run the following command to check if the `/etc/resolv.conf` is updated with the minikube ip.
 
 ### Installing helm
 
@@ -157,4 +157,4 @@ Once all the parts are in place, getting the system running is quite easy!
 
 You can use the `kubectl get pods` command to see the kubernetes pods come
 online. 
-It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increse the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
+It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
