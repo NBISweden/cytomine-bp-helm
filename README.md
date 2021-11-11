@@ -112,6 +112,24 @@ works!
    docker and minikube at the same time (unless I use the docker driver, but
    then ingress-dns doesn't work).
 
+### Setting up the environment on Ubuntu System
+
+We need to add the `minikube-ip` as a DNS server
+
+Update the file `/etc/resolvconf/resolv.conf.d/base` to have the following contents
+
+```
+search test
+nameserver <minikube ip>
+timeout 5
+```
+
+Ensure your Linux OS uses `systemcl`, run the following command
+
+`sudo resolvconf -u`
+
+To verify, run the following command to check if the `\etc\resolv.conf` is updated with the minikube ip.
+
 ### Installing helm
 
 Helm is a package manager for kubernetes. It allows us to configure, install and
@@ -124,9 +142,7 @@ individual parts. Instructions for installing helm can be found
 Exactly what settings to use depends on what machine you are running on, but I
 use this for my development:
 ```
-minikube start --addons='ingress-dns','ingress','metrics-server' \
-               --cpus=3 \
-               --memory=8g
+minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
 ```
 
 ### Installing the helm charts
@@ -140,5 +156,5 @@ Once all the parts are in place, getting the system running is quite easy!
     prefix.
 
 You can use the `kubectl get pods` command to see the kubernetes pods come
-online. If everything works, you should now be able to reach the system in your
-browser at `cytomine.test`.
+online. 
+It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increse the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
