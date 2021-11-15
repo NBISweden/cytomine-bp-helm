@@ -38,7 +38,7 @@ spec:
         - name: core-check
           image: alpine:3.14
           command: ["wget"]
-          args: ["{{ .Values.protocol }}://{{ .Values.global.domainName }}/api/user/current.json"]
+          args: ["{{ include "protocol" . }}://{{ .Values.global.domainName }}/api/user/current.json"]
       containers:
         - name: {{ .Chart.Name }}-software-router
           image: "{{ .Values.software_router.image.repository }}:{{ .Values.software_router.image.tag }}"

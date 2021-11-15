@@ -8,7 +8,7 @@
 
 global:
   domainName: "cytomine.test"
-protocol: "http"
+  use_tls: false
 readOnceStorageClass: ""
 readManyStorageClass: ""
 singularityStorage: "10Gi"

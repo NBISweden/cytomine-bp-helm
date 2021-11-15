@@ -61,3 +61,15 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Simple function that returns 'http' or 'https' depending on wheather
+.Values.global.use_tls is `true` or `false`
+*/}}
+{{- define "protocol" -}}
+{{ if .Values.global.use_tls | default false }}
+{{- printf "https" }}
+{{- else }}
+{{- printf "http" }}
+{{- end }}
+{{- end }}
