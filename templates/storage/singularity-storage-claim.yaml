@@ -1,4 +1,4 @@
-{{ if or .Values.core.deploy .Values.slurm.deploy .Values.software_router.deploy }}
+{{ if or .Values.core.deploy .Values.k8s_software_router.deploy }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

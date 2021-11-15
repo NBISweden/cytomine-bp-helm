@@ -232,29 +232,7 @@ k8s_software_router:
       cpu: "200m"
 
 #
-# These resources don't work well in kubernetes at the moment
-#
-
-software_router:
-  deploy: false
-  image:
-    pullPolicy: IfNotPresent
-    repository: cytomine/software_router
-    tag: v2.0.0
-
-slurm:
-  deploy: false
-  port: 8000
-  sshPort: 22
-  image:
-    pullPolicy: IfNotPresent
-    repository: cytomine/slurm
-    tag: v1.0.0
-  resources: {}
-
-#
-# Kuberenetes things - these are help make the debugging and administrating of
-#                      the deployment easier.
+# Kuberenetes things
 #
 
 serviceAccount:
