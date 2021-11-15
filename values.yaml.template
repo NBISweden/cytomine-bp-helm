@@ -6,7 +6,8 @@
 # Globals
 #
 
-serverName: "cytomine.test"
+global:
+  domainName: "cytomine.test"
 protocol: "http"
 readOnceStorageClass: ""
 readManyStorageClass: ""

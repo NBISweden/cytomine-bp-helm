@@ -8,7 +8,7 @@ metadata:
   {{- end }}
 spec:
   rules:
-    - host: {{ .Values.serverName }}
+    - host: {{ .Values.global.domainName }}
       http:
         paths:
           - path: /
@@ -21,6 +21,6 @@ spec:
   {{ if eq .Values.protocol "https" }}
   tls:
   - hosts:
-    - {{ .Values.serverName }}
+    - {{ .Values.global.domainName }}
     secretName: {{ include "cytomine.name" . }}-ingress-tls
   {{ end }}
