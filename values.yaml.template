@@ -186,7 +186,7 @@ ims:
 
 nginx:
   deploy: true
-  port: 80
+  port: 8000
   serverID: $SERVER_ID
   image:
     pullPolicy: IfNotPresent

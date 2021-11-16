@@ -35,8 +35,6 @@ spec:
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
           command: ["/usr/local/nginx/sbin/nginx"]
-          securityContext:
-            privileged: true
           volumeMounts:
             - name: {{ include "cytomine.name" . }}-nginx-config
               mountPath: /usr/local/nginx/conf/nginx.conf
@@ -45,7 +43,7 @@ spec:
               mountPath: "/tmp/uploaded"
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.nginx.port }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
 {{ end }}
