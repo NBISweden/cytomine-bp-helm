@@ -73,3 +73,14 @@ Simple function that returns 'http' or 'https' depending on wheather
 {{- printf "http" }}
 {{- end }}
 {{- end }}
+
+{{/*
+Generates a random admin password, if no password is set already.
+*/}}
+{{- define "cytomine.adminPassword" -}}
+{{ if .Values.core.adminPassword }}
+{{- .Values.core.adminPassword }}
+{{- else }}
+{{- randAlphaNum 12 }}
+{{- end }}
+{{- end }}

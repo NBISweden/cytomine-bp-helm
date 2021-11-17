@@ -160,11 +160,11 @@ core:
       memory: "1Gi"
       cpu: "500m"
   # These variables default to a uuid (v4) if not set
-  adminPassword: $ADMIN_PASS
-  adminPrivKey: $ADMIN_SEC
-  adminPubKey: $ADMIN_PUB
-  superAdminPrivKey: $SUPERADMIN_SEC
-  superAdminPubKey: $SUPERADMIN_PUB
+  adminPassword: null
+  adminPrivKey: null
+  adminPubKey: null
+  superAdminPrivKey: null
+  superAdminPubKey: null
   imsPrivKey: $IMS_SEC
   imsPubKey: $IMS_PUB
   rabbitmqPrivKey: $RABBITMQ_SEC
@@ -188,7 +188,7 @@ ims:
 nginx:
   deploy: true
   port: 8000
-  serverID: $SERVER_ID
+  serverID: null
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/nginx
