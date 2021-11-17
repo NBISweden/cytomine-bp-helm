@@ -1,4 +1,4 @@
-{{ if .Values.nginx.deploy }}
+{{ if and .Values.nginx.deploy .Values.global.minikube }}
 apiVersion: v1
 kind: Service
 metadata:

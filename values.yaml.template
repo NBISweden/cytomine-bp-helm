@@ -9,6 +9,7 @@
 global:
   domainName: "cytomine.test"
   use_tls: false
+  minikube: true
 readOnceStorageClass: ""
 readManyStorageClass: ""
 singularityStorage: "10Gi"
