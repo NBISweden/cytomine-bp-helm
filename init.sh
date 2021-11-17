@@ -3,14 +3,6 @@
 # This script generates keys needed for the deployment
 #
 
-echo "Generating encryption keys"
-key_file="configs/software_router/ssh_key"
-if [ -f "$key_file" ]
-then
-    rm $key_file $key_file.pub
-fi
-ssh-keygen -C local -t rsa -m pem -b 2048 -f $key_file -P '' -q
-
 echo "Generating message authentication keys"
 export ADMIN_PASS=$( uuidgen )
 export ADMIN_SEC=$( uuidgen )
