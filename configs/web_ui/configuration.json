@@ -1,6 +1,6 @@
 {
-  "CYTOMINE_CORE_HOST": "{{ include "protocol" . }}://{{ .Values.global.domainName }}",
-  "CYTOMINE_UPLOAD_HOST": "{{ include "protocol" . }}://{{ .Values.global.domainName }}",
+  "CYTOMINE_CORE_HOST": "{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}",
+  "CYTOMINE_UPLOAD_HOST": "{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}",
   "DIGITAL_ZOOM_INCREMENT": 4,
   "VIEWER_ANNOTATIONS_REFRESH_INTERVAL": 10000,
   "MEMBERS_ACTIVITY_REFRESH_INTERVAL": 30000,

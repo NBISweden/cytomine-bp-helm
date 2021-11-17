@@ -66,7 +66,7 @@ Create the name of the service account to use
 Simple function that returns 'http' or 'https' depending on wheather
 .Values.global.use_tls is `true` or `false`
 */}}
-{{- define "protocol" -}}
+{{- define "cytomine.protocol" -}}
 {{ if .Values.global.use_tls | default false }}
 {{- printf "https" }}
 {{- else }}
