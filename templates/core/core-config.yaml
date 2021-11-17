@@ -1,3 +1,9 @@
+# generate secrets that can be shared in the configs
+{{- $imsSec := .Values.core.imsPrivKey | default uuidv4 }}
+{{- $imsPub := .Values.core.imsPubKey | default uuidv4 }}
+{{- $mqSec := .Values.core.rabbitmqPrivKey | default uuidv4 }}
+{{- $mqPub := .Values.core.rabbitmqPubKey | default uuidv4 }}
+
 {{ if .Values.core.deploy }}
 apiVersion: v1
 kind: ConfigMap
@@ -5,5 +11,111 @@ metadata:
   name: {{ include "cytomine.name" . }}-core-config
 data:
   cytomineconfig.groovy: |-
-    {{ (tpl (.Files.Get "configs/core.conf") . ) | nindent 4 }}
+    dataSource.url="jdbc:postgresql://{{ include "cytomine.name" . }}-postgis:5432/docker"
+    dataSource.username="docker"
+    dataSource.password="docker"
+
+    cytomine.customUI.global = [
+            dashboard: ["ALL"],
+            search : ["ROLE_ADMIN"],
+            project: ["ALL"],
+            ontology: ["ROLE_ADMIN"],
+            storage : ["ROLE_USER","ROLE_ADMIN"],
+            activity : ["ALL"],
+            feedback : ["ROLE_USER","ROLE_ADMIN"],
+            explore : ["ROLE_USER","ROLE_ADMIN"],
+            admin : ["ROLE_ADMIN"],
+            help : ["ALL"]
+    ]
+
+
+    grails.serverURL="{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
+    grails.imageServerURL=["{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"]
+    grails.uploadURL="{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
+
+    storage_buffer="/data/images/_buffer"
+    storage_path="/data/images"
+
+    grails.adminPassword="{{ include "cytomine.adminPassword" . }}"
+    grails.adminPrivateKey="{{ .Values.core.adminPrivKey | default uuidv4 }}"
+    grails.adminPublicKey="{{ .Values.core.adminPubKey | default uuidv4 }}"
+    grails.superAdminPrivateKey="{{ .Values.core.superAdminPrivKey | default uuidv4 }}"
+    grails.superAdminPublicKey="{{ .Values.core.superAdminPubKey | default uuidv4 }}"
+    grails.ImageServerPrivateKey="{{ $imsSec }}"
+    grails.ImageServerPublicKey="{{ $imsPub }}"
+    grails.rabbitMQPrivateKey="{{ $mqSec }}"
+    grails.rabbitMQPublicKey="{{ $mqPub }}"
+
+    grails.notification.email="{{ .Values.emailSender }}"
+    grails.notification.password="{{ .Values.smtpPass }}"
+    grails.notification.smtp.host="{{ .Values.smtpHost }}"
+    grails.notification.smtp.port="{{ .Values.smtpPport }}"
+    grails.admin.email="{{ .Values.adminEmail }}"
+
+    grails.mongo.host = "{{ include "cytomine.name" . }}-mongodb"
+    grails.mongo.options.connectionsPerHost=10
+    grails.mongo.options.threadsAllowedToBlockForConnectionMultiplier=5
+
+    grails.messageBrokerServerURL="{{ include "cytomine.name" . }}-rabbitmq:{{ .Values.rabbitmq.port }}"
+
+    grails.serverID="{{ .Values.nginx.serverID | default uuidv4 }}"
+
+{{ end }}
+---
+{{ if .Values.ims.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-ims-config
+data:
+  imageserverconfig.properties: |-
+    dataSource.url=jdbc:h2:/tmp/devDb;MVCC=TRUE;LOCK_TIMEOUT=10000
+    cytomine.vips=/usr/local/bin/vips
+    cytomine.identify=identify
+    cytomine.tiffinfo=tiffinfo
+    cytomine.vipsthumbnail=/usr/local/bin/vipsthumbnail
+    cytomine.hdf5.scriptToFindFiles=webapps/ROOT/WEB-INF/scripts/relatedFiles.sh
+
+    cytomine.coreURL={{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}
+    cytomine.storagePath=/data/images
+    cytomine.storageBufferPath=/tmp/uploaded
+    cytomine.imageServerPublicKey={{ $imsPub }}
+    cytomine.imageServerPrivateKey={{ $imsSec }}
+    cytomine.iipImageServerBase=http://{{ template "cytomine.name" . }}-iip-official:{{ .Values.iip_off.port }}/fcgi-bin/iipsrv.fcgi
+    cytomine.iipImageServerCyto=http://{{ template "cytomine.name" . }}-iip-cyto:{{ .Values.iip_cyto.port }}/fcgi-bin/iipsrv.fcgi
+
+    bioformat.application.enabled={{ .Values.bioformat.deploy }}
+    bioformat.application.location={{ template "cytomine.name" . }}-bioformat
+    bioformat.application.port={{ .Values.bioformat.port }}
+
+    cytomine.Jpeg2000Enabled=false
+    cytomine.deleteImageFilesFrequency=600000
+
+{{ end }}
+---
+{{ if .Values.k8s_software_router.deploy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cytomine.name" . }}-k8s-software-router-secret
+type: Opaque
+stringData:
+  settings.yaml: |-
+    core:
+      url: "{{ .Values.global.domainName }}"
+      publicKey: "{{ $mqPub }}"
+      privateKey: "{{ $mqSec }}"
+      protocol: "{{ include "cytomine.protocol" . }}"
+    rabbitmq:
+      host: "{{ include "cytomine.name" . }}-rabbitmq"
+      port: "{{ .Values.rabbitmq.port }}"
+      username: '{{ .Values.rabbitmq.username }}'
+      password: '{{ .Values.rabbitmq.password }}'
+      exchange: "exchangeCommunication"
+      queue: "queueCommunication"
+    github:
+      username: "{{ .Values.k8s_software_router.github_username }}"
+      password: "{{ .Values.k8s_software_router.github_password }}"
+    serviceaccount: {{ include "cytomine.serviceAccountName" . }}
+
 {{ end }}

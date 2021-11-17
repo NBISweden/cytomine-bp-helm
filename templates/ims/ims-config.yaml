@@ -1,9 +1,0 @@
-{{ if .Values.ims.deploy }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "cytomine.name" . }}-ims-config
-data:
-  imageserverconfig.properties: |-
-    {{ (tpl (.Files.Get "configs/ims.conf") . ) | nindent 4 }}
-{{ end }}
