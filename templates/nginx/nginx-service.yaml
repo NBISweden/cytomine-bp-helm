@@ -1,0 +1,16 @@
+{{ if .Values.nginx.deploy }}
+{{ if not .Values.global.minikube }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cytomine.name" . }}-nginx
+spec:
+  selector:
+    app: {{ include "cytomine.name" . }}-nginx
+  ports:
+    - name: http
+      port: {{ .Values.nginx.port }}
+      targetPort: {{ .Values.nginx.port }}
+      protocol: TCP
+{{ end }}
+{{ end }}

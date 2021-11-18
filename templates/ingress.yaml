@@ -17,7 +17,7 @@ spec:
               service:
                 name: {{ include "cytomine.name" . }}-nginx
                 port:
-                  number: 80
+                  number: {{ .Values.nginx.port }}
   {{ if .Values.global.use_tls }}
   tls:
   - hosts:
