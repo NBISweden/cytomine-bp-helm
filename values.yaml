@@ -12,6 +12,7 @@ global:
   minikube: true
 readOnceStorageClass: ""
 readManyStorageClass: ""
+
 singularityStorage: "10Gi"
 tempImageStorage: "1Gi"
 imageStorage: "3Gi"
@@ -22,7 +23,7 @@ postgresStorage: "3Gi"
 adminEmail: info@cytomine.coop
 emailSender: your.email@gmail.com
 emailReceiver: receiver@XXX.com
-smtpPass: passwd
+smtpPass: null
 smtpHost: smtp.gmail.com
 smtpPort: 587
 
@@ -64,10 +65,10 @@ rabbitmq:
     tag: v1.1.2
   resources:
     requests:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "100m"
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "400m"
 
 postgresql:
@@ -165,10 +166,10 @@ core:
   adminPubKey: null
   superAdminPrivKey: null
   superAdminPubKey: null
-  imsPrivKey: $IMS_SEC
-  imsPubKey: $IMS_PUB
-  rabbitmqPrivKey: $RABBITMQ_SEC
-  rabbitmqPubKey: $RABBITMQ_PUB
+  imsPrivKey: null
+  imsPubKey: null
+  rabbitmqPrivKey: null
+  rabbitmqPubKey: null
 
 ims:
   deploy: true

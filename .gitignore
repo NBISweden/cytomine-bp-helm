@@ -17,5 +17,3 @@ temp/
 # encryption keys
 configs/software_router/ssh_key*
 
-# don't commit values.yaml which may include secrets
-values.yaml
