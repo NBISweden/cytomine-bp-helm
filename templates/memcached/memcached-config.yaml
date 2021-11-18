@@ -1,0 +1,9 @@
+{{ if .Values.memcached.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-memcached-config
+data:
+  memcached.conf: |-
+    {{ .Files.Get "configs/memcached.conf" | nindent 4 }}
+{{ end }}

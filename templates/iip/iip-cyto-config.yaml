@@ -1,0 +1,9 @@
+{{ if .Values.iip_cyto.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-iip-cyto-config
+data:
+  nginx.conf.sample: |-
+    {{ ( tpl (.Files.Get "configs/iip_cyto.conf.sample") . ) | nindent 4 }}
+{{ end }}

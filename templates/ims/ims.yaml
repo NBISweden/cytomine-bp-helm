@@ -1,0 +1,58 @@
+{{ if .Values.ims.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-ims
+  labels:
+    role: ims
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-ims
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-ims
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: ims
+        app: {{ template "cytomine.name" . }}-ims
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: {{ template "cytomine.name" . }}-image-claim
+        - name: image-temp
+          persistentVolumeClaim:
+            claimName: {{ template "cytomine.name" . }}-temp-image-claim
+        - name: ims-config
+          configMap:
+            name: {{ template "cytomine.name" . }}-ims-config
+      containers:
+        - name: {{ .Chart.Name }}-ims
+          image: "{{ .Values.ims.image.repository }}:{{ .Values.ims.image.tag }}"
+          imagePullPolicy: {{ .Values.ims.image.pullPolicy }}
+          volumeMounts:
+            - name: images
+              mountPath: "/data/images"
+            - name: image-temp
+              mountPath: "/tmp/uploaded"
+            - name: ims-config
+              mountPath: /usr/share/tomcat7/.grails/imageserverconfig.properties
+              subPath: imageserverconfig.properties
+          securityContext:
+            privileged: true
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+          - name: IMS_STORAGE_PATH
+            value: /data/images
+          resources:
+            {{- toYaml .Values.ims.resources | nindent 12 }}
+{{ end }}

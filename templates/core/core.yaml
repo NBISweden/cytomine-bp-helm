@@ -1,0 +1,62 @@
+{{ if .Values.core.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-core
+  labels:
+    role: core
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-core
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-core
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: core
+        app: {{ template "cytomine.name" . }}-core
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      volumes:
+      - name: singularity-images
+        persistentVolumeClaim:
+          claimName: {{ template "cytomine.name" . }}-singularity-claim
+      - name: grails-config
+        configMap:
+          name: {{ include "cytomine.name" . }}-core-config
+      containers:
+        - name: {{ .Chart.Name }}-core
+          image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
+          imagePullPolicy: {{ .Values.core.image.pullPolicy }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: grails-config
+              mountPath:  /usr/share/tomcat7/.grails/cytomineconfig.groovy
+              subPath: cytomineconfig.groovy
+            - name: singularity-images
+              mountPath: "/data/softwares/images"
+          ports:
+            - name: http
+              containerPort: {{ .Values.core.port }}
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 120
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   timeoutSeconds: 5
+{{ end }}

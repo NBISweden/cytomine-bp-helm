@@ -1,0 +1,248 @@
+# Default values for cytomine.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#
+# Globals
+#
+
+global:
+  domainName: "cytomine.test"
+  use_tls: false
+  minikube: true
+readOnceStorageClass: ""
+readManyStorageClass: ""
+
+singularityStorage: "10Gi"
+tempImageStorage: "1Gi"
+imageStorage: "3Gi"
+mongodbStorage: "1Gi"
+postgresStorage: "3Gi"
+
+# Email settings
+adminEmail: info@cytomine.coop
+emailSender: your.email@gmail.com
+emailReceiver: receiver@XXX.com
+smtpPass: null
+smtpHost: smtp.gmail.com
+smtpPort: 587
+
+#
+# Ingress - these are things that has to do with the user facing webpage
+#
+ingress:
+  annotations: {}
+
+
+#
+# Services - these are the services deployed by this chart
+#
+
+memcached:
+  deploy: true
+  port: 11211
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/memcached
+    tag: v1.1.2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+rabbitmq:
+  deploy: true
+  port: 5672
+  managementPort: 15672
+  username: router
+  password: router
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/rabbitmq
+    tag: v1.1.2
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+
+postgresql:
+  deploy: true
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/postgis
+    tag: v2.0.0
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+mongodb:
+  deploy: true
+  port: 27017
+  statusPort: 28017
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/mongodb
+    tag: v1.1.2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+iip_off:
+  deploy: true
+  port: 8083
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/iipofficial
+    tag: v1.2.0
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+iip_cyto:
+  deploy: true
+  port: 8084
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/iipcyto
+    tag: v1.2.2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+bioformat:
+  deploy: true
+  port: 4321
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/bioformat
+    tag: v1.1.2
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+core:
+  deploy: true
+  port: 8001
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/core
+    tag: v3.0.3
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  # These variables default to a uuid (v4) if not set
+  adminPassword: null
+  adminPrivKey: null
+  adminPubKey: null
+  superAdminPrivKey: null
+  superAdminPubKey: null
+  imsPrivKey: null
+  imsPubKey: null
+  rabbitmqPrivKey: null
+  rabbitmqPubKey: null
+
+ims:
+  deploy: true
+  port: 8081
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/ims
+    tag: v1.2.6
+  resources:
+    requests:
+      memory: "768Mi"
+      cpu: "100m"
+    limits:
+      memory: "768Mi"
+      cpu: "200m"
+
+nginx:
+  deploy: true
+  port: 8000
+  serverID: null
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/nginx
+    tag: v1.3.1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+web_ui:
+  deploy: true
+  port: 8080
+  image:
+    pullPolicy: IfNotPresent
+    repository: cytomine/web_ui
+    tag: v1.2.1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+k8s_software_router:
+  deploy: true
+  image:
+    pullPolicy: IfNotPresent
+    repository: norling/k8s-software-router
+    tag: latest
+  github_username: ""
+  github_password: ""
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+#
+# Kuberenetes things
+#
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname
+  # template
+  name: ""
