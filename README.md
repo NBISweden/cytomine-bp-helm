@@ -128,7 +128,7 @@ Ensure your Linux OS uses `systemcl`, run the following command
 
 `sudo resolvconf -u`
 
-To verify, run the following command to check if the `/etc/resolv.conf` is updated with the minikube ip.
+To verify, check that the `/etc/resolv.conf` is updated with the minikube ip.
 
 ### Installing helm
 
