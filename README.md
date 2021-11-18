@@ -130,6 +130,13 @@ Ensure your Linux OS uses `systemcl`, run the following command
 
 To verify, check that the `/etc/resolv.conf` is updated with the minikube ip.
 
+If the above steps do not work or you do not want to use `resolvconf`, add the above contents manually instead. *After** `minikube` is started run
+```
+echo -e $"\nsearch test\nnameserver $(minikube ip)\ntimeout 5" \
+| sudo tee -a /etc/resolv.conf
+```
+When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
+
 ### Installing helm
 
 Helm is a package manager for kubernetes. It allows us to configure, install and
