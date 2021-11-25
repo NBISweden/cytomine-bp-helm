@@ -101,10 +101,11 @@ metadata:
 type: Opaque
 stringData:
   settings.yaml: |-
+    name: local-server
     core:
       url: "{{ .Values.global.domainName }}"
-      publicKey: "{{ $mqPub }}"
-      privateKey: "{{ $mqSec }}"
+      public_key: "{{ $mqPub }}"
+      private_key: "{{ $mqSec }}"
       protocol: "{{ include "cytomine.protocol" . }}"
     rabbitmq:
       host: "{{ include "cytomine.name" . }}-rabbitmq"
@@ -117,5 +118,7 @@ stringData:
       username: "{{ .Values.k8s_software_router.github_username }}"
       password: "{{ .Values.k8s_software_router.github_password }}"
     serviceaccount: {{ include "cytomine.serviceAccountName" . }}
+    software_repos:
+      - cytomine
 
 {{ end }}
