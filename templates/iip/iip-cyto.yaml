@@ -46,6 +46,8 @@ spec:
               subPath: nginx.conf.sample
           command: ["/bin/sh"]
           args: ["-c", "cp /config-temp/nginx.conf.sample /tmp/nginx.conf.sample && /tmp/deploy.sh"]
+          securityContext:
+            privileged: true
           env:
           - name: NB_IIP_PROCESS
             value: "10"
