@@ -43,4 +43,8 @@ spec:
             value: "{{ .Values.bioformat.port }}"
           resources:
             {{- toYaml .Values.bioformat.resources | nindent 12 }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{ end }}

@@ -11,6 +11,7 @@ global:
   use_tls: false
   minikube: true
   affinity: {}
+  tolerations: {}
 readOnceStorageClass: ""
 readManyStorageClass: ""
 

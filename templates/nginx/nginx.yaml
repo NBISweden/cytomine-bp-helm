@@ -52,4 +52,8 @@ spec:
               containerPort: {{ .Values.nginx.port }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{ end }}

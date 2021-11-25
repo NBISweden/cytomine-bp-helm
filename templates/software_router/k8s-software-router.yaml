@@ -42,4 +42,8 @@ spec:
               subPath: settings.yaml
           resources:
             {{- toYaml .Values.k8s_software_router.resources | nindent 12 }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{ end }}
