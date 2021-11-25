@@ -23,6 +23,10 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: singularity-images
         persistentVolumeClaim:
