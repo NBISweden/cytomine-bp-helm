@@ -51,18 +51,19 @@ spec:
               containerPort: {{ .Values.core.port }}
           resources:
             {{- toYaml .Values.core.resources | nindent 12 }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          #   initialDelaySeconds: 120
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /server/ping
+              port: 8080
+            initialDelaySeconds: 300
+            failureThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /server/ping
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
