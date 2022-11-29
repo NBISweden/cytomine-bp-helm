@@ -82,6 +82,13 @@ from pods that aren't running.
 which allows us to use templates which will be automatically filled with values.
 This makes management much more convenient.
 
+### Installing helm
+
+Helm is a package manager for kubernetes. It allows us to configure, install and
+uninstall the entire system much easier than using kubernetes to deploy all the
+individual parts. Instructions for installing helm can be found
+[here](https://helm.sh/docs/intro/install).
+
 ## Development environment
 
 This development environment has been tested in minikube. Instructions for
@@ -95,7 +102,7 @@ instructions for using the
 [ingress dns](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns)
 add-on.
 
-### Setting up the environment on OS X
+### Setting up the environment and starting the minikube cluster on OS X
 
 Minikube doesn't seem to be superhappy on OS X, but with a few precautions it
 works!
@@ -112,56 +119,42 @@ works!
    docker and minikube at the same time (unless I use the docker driver, but
    then ingress-dns doesn't work).
 
-### Setting up the environment on Ubuntu System
-
-We need to add the `minikube-ip` as a DNS server
-
-Update the file `/etc/resolvconf/resolv.conf.d/base` to have the following contents
+Exactly what settings to use depends on what machine you are running on, but I
+use this for my development:
 
 ```
-search test
-nameserver <minikube ip>
-timeout 5
+minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
 ```
 
-Ensure your Linux OS uses `systemcl`, run the following command
+### Setting up the environment and starting the minikube cluster on Ubuntu
 
-`sudo resolvconf -u`
+1. Start the minikube
 
-To verify, check that the `/etc/resolv.conf` is updated with the minikube ip.
-
-If the above steps do not work or you do not want to use `resolvconf`, add the above contents manually instead. *After** `minikube` is started run
+```
+minikube start
+```
+2. Enable the addons
+```
+minikube addons enable ingress
+minikube addons enable ingress-dns
+```
+3. Add the `minikube-ip` as a DNS server
 ```
 echo -e $"\nsearch test\nnameserver $(minikube ip)\ntimeout 5" \
 | sudo tee -a /etc/resolv.conf
 ```
 When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
 
-### Installing helm
-
-Helm is a package manager for kubernetes. It allows us to configure, install and
-uninstall the entire system much easier than using kubernetes to deploy all the
-individual parts. Instructions for installing helm can be found
-[here](https://helm.sh/docs/intro/install).
-
-### Creating the minikube cluster
-
-Exactly what settings to use depends on what machine you are running on, but I
-use this for my development:
-```
-minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
-```
-
-### Installing the helm charts
+### Installing the cytomine helm chart
 
 Once all the parts are in place, getting the system running is quite easy!
 
- 1) Run `./init.sh` to generate the secrets and keys needed by the system.
- 2) Take a look at the generated `values.yaml` file, to see if you wish to make
-    any changes.
- 3) Run `helm install cytomine .` to install the system with the `cytomine`
-    prefix.
+Run `helm install cytomine .` to install the system with the `cytomine` prefix.
 
-You can use the `kubectl get pods` command to see the kubernetes pods come
-online. 
+You can use the `kubectl get pods` command to see the kubernetes pods come online.
 It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
+
+Username to login is `admin` and the password can be retrived by running the command:
+```
+kubectl -n default get configmap/cytomine-core-config -o jsonpath="{.data}" | grep -oE 'adminPassword=\\\"[0-9a-zA-Z]+\\\"'
+```
