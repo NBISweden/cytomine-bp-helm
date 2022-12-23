@@ -1,6 +1,6 @@
 {{ if .Values.mongodb.deploy }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "cytomine.name" . }}-mongodb
   labels:
@@ -30,7 +30,7 @@ spec:
       volumes:
       - name: mongodb-storage
         persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}-mongodb-claim
+          claimName: {{ template "cytomine.name" . }}
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
@@ -46,10 +46,25 @@ spec:
             - name: status
               containerPort: 28017
               protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 15
+            periodSeconds: 60
           resources:
             {{- toYaml .Values.mongodb.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ template "cytomine.name" . }}
+      spec:
+        storageClassName: {{ .Values.readOnceStorageClass }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.mongodbStorage }}
 {{ end }}
