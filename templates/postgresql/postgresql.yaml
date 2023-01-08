@@ -1,6 +1,6 @@
 {{ if .Values.postgresql.deploy }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "cytomine.name" . }}-postgis
   labels:
@@ -30,7 +30,7 @@ spec:
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}-postgres-claim
+          claimName: {{ template "cytomine.name" . }}
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
@@ -77,4 +77,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ template "cytomine.name" . }}
+      spec:
+        storageClassName: {{ .Values.readOnceStorageClass }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgresStorage }}
 {{ end }}
