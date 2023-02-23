@@ -11,6 +11,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: 1
+  serviceName: {{ template "cytomine.name" . }}-postgis
   selector:
     matchLabels:
       app: {{ template "cytomine.name" . }}-postgis
@@ -27,16 +28,12 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
           volumeMounts:
-            - name: postgres-storage
+            - name: {{ template "cytomine.name" . }}
               mountPath: "/postgres-data/"
           env:
           - name: DATA_DIR
