@@ -28,12 +28,16 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: {{ include "cytomine.fullname" . }}-cytomine-postgis-0
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
           volumeMounts:
-            - name: {{ template "cytomine.name" . }}
+            - name: postgres-storage
               mountPath: "/postgres-data/"
           env:
           - name: DATA_DIR
@@ -76,7 +80,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "cytomine.name" . }}
+        name: {{ include "cytomine.name" . }}
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:

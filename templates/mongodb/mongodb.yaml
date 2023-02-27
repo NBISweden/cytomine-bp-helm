@@ -28,13 +28,17 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: mongodb-storage
+        persistentVolumeClaim:
+          claimName: {{ include "cytomine.fullname" . }}-cytomine-mongodb-0
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
           imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
           command: ["mongod"]
           volumeMounts:
-            - name: {{ template "cytomine.name" . }}
+            - name: mongodb-storage
               mountPath: "/data/db"
           ports:
             - name: mongodb
@@ -56,7 +60,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "cytomine.name" . }}
+        name: {{ include "cytomine.fullname" . }}
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:
