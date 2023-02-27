@@ -31,7 +31,7 @@ spec:
       volumes:
       - name: mongodb-storage
         persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}
+          claimName: {{ include "cytomine.fullname" . }}-cytomine-postgis-0
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
@@ -60,7 +60,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "cytomine.name" . }}
+        name: {{ include "cytomine.fullname" . }}
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:
