@@ -11,6 +11,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: 1
+  serviceName: {{ include "cytomine.name" . }}-mongodb
   selector:
     matchLabels:
       app: {{ template "cytomine.name" . }}-mongodb
