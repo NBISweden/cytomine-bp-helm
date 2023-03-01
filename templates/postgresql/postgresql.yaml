@@ -11,6 +11,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: 1
+  serviceName: {{ include "cytomine.name" . }}-mongodb
   selector:
     matchLabels:
       app: {{ template "cytomine.name" . }}-postgis
@@ -27,10 +28,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
@@ -79,7 +76,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "cytomine.name" . }}
+        name: postgres-storage
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:

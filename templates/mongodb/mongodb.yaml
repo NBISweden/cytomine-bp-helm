@@ -11,6 +11,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   replicas: 1
+  serviceName: {{ include "cytomine.name" . }}-mongodb
   selector:
     matchLabels:
       app: {{ template "cytomine.name" . }}-mongodb
@@ -27,10 +28,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-      - name: mongodb-storage
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
@@ -59,7 +56,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ template "cytomine.name" . }}
+        name: mongodb-storage
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:
