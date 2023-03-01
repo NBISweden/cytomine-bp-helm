@@ -76,7 +76,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
     - metadata:
-        name: {{ include "cytomine.fullname" . }}
+        name: postgres-storage
       spec:
         storageClassName: {{ .Values.readOnceStorageClass }}
         accessModes:
