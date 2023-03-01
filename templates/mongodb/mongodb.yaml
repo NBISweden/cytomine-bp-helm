@@ -28,10 +28,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-      - name: mongodb-storage
-        persistentVolumeClaim:
-          claimName: {{ include "cytomine.fullname" . }}-cytomine-postgis-0
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
