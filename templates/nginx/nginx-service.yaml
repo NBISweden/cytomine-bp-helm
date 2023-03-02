@@ -1,5 +1,4 @@
 {{ if .Values.nginx.deploy }}
-{{ if not .Values.global.minikube }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,5 +11,4 @@ spec:
       port: {{ .Values.nginx.port }}
       targetPort: {{ .Values.nginx.port }}
       protocol: TCP
-{{ end }}
 {{ end }}
