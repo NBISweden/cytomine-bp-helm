@@ -15,16 +15,9 @@ production systems in its current state.
   - sensitive data should be stored in secrets
   - usernames and passwords should be generated in a secure way
 
-### Medium priority
-
-- Most resources don't have proper liveness/readiness probes making it hard to
-  tell when they become unhealthy.
-
-- Postgres and MongoDB use Deployments where they should use StatefulSets.
-
 ### Low priority
 
-- The nginx container could be replaced with ingress rules.
+- The nginx container could possibly be replaced by ingress rules.
 
 ## Short kubernetes intro
 
