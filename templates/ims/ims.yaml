@@ -63,8 +63,6 @@ spec:
             - name: ims-config
               mountPath: /usr/share/tomcat9/.grails/ims-config.groovy
               subPath: ims-config.groovy
-          securityContext:
-            privileged: true
           ports:
             - name: http
               containerPort: 8080
