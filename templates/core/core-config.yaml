@@ -6,10 +6,10 @@
 
 {{ if .Values.core.deploy }}
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: {{ include "cytomine.name" . }}-core-config
-data:
+stringData:
   cytomineconfig.groovy: |-
     dataSource.url="jdbc:postgresql://{{ include "cytomine.name" . }}-postgis:5432/docker"
     dataSource.username="docker"

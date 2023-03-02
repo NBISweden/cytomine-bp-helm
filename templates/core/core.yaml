@@ -31,9 +31,9 @@ spec:
       - name: singularity-images
         persistentVolumeClaim:
           claimName: {{ template "cytomine.name" . }}-singularity-claim
-      - name: grails-config
-        configMap:
-          name: {{ include "cytomine.name" . }}-core-config
+      - name: core-config
+        secret:
+          secretName: {{ include "cytomine.name" . }}-core-config
       containers:
         - name: {{ .Chart.Name }}-core
           image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
