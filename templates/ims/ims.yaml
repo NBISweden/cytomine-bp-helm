@@ -61,8 +61,8 @@ spec:
             - name: image-temp
               mountPath: "/tmp/uploaded"
             - name: ims-config
-              mountPath: /usr/share/tomcat7/.grails/imageserverconfig.properties
-              subPath: imageserverconfig.properties
+              mountPath: /usr/share/tomcat9/.grails/ims-config.groovy
+              subPath: ims-config.groovy
           securityContext:
             privileged: true
           ports:
