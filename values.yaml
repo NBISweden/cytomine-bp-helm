@@ -157,10 +157,10 @@ core:
     tag: v3.2.3
   resources:
     requests:
-      memory: "1Gi"
+      memory: "2Gi"
       cpu: "500m"
     limits:
-      memory: "1Gi"
+      memory: "2Gi"
       cpu: "500m"
   # These variables default to a uuid (v4) if not set
   adminPassword: null
@@ -182,10 +182,10 @@ ims:
     tag: v2.0.0
   resources:
     requests:
-      memory: "768Mi"
+      memory: "2Gi"
       cpu: "100m"
     limits:
-      memory: "768Mi"
+      memory: "2Gi"
       cpu: "200m"
 
 nginx:
