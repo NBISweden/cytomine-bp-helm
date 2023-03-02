@@ -8,7 +8,7 @@ Admin credentials are:
 
 A password was automatically generated and injected in the core container,
 You can retrieve it with:
-    $ kubectl -n {{ .Release.Namespace }} get configmap/cytomine-core-config -o jsonpath="{.data}" | grep -oE 'adminPassword=\\\"[0-9a-zA-Z]+\\\"'
+    $ kubectl -n {{ .Release.Namespace }} get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
 {{- end }}
 
 It takes a few minutes for it to fully deploy, so please be patient. This
