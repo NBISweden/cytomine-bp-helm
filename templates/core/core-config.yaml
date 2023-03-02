@@ -64,7 +64,7 @@ stringData:
 ---
 {{ if .Values.ims.deploy }}
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: {{ include "cytomine.name" . }}-ims-config
 data:

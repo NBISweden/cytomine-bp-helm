@@ -35,8 +35,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "cytomine.name" . }}-temp-image-claim
         - name: ims-config
-          configMap:
-            name: {{ template "cytomine.name" . }}-ims-config
+          secret:
+            secretName: {{ template "cytomine.name" . }}-ims-config
       containers:
         - name: {{ .Chart.Name }}-ims
           image: "{{ .Values.ims.image.repository }}:{{ .Values.ims.image.tag }}"
