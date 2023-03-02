@@ -59,7 +59,7 @@ stringData:
     grails.messageBrokerServerURL="{{ include "cytomine.name" . }}-rabbitmq:{{ .Values.rabbitmq.port }}"
 
     grails.serverID="{{ .Values.nginx.serverID | default uuidv4 }}"
-
+  server.xml: |{{ .Files.Get "configs/core-server.xml" | nindent 4 }}
 {{ end }}
 ---
 {{ if .Values.ims.deploy }}

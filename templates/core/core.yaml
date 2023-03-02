@@ -44,6 +44,9 @@ spec:
             - name: grails-config
               mountPath:  /usr/share/tomcat7/.grails/cytomineconfig.groovy
               subPath: cytomineconfig.groovy
+            - name: core-config
+              mountPath:  /usr/local/tomcat/conf/server.xml
+              subPath: server.xml
             - name: singularity-images
               mountPath: "/data/softwares/images"
           ports:
