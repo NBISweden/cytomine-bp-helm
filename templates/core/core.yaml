@@ -41,8 +41,8 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
-            - name: grails-config
-              mountPath:  /usr/share/tomcat7/.grails/cytomineconfig.groovy
+            - name: core-config
+              mountPath:  /usr/share/tomcat9/.grails/cytomineconfig.groovy
               subPath: cytomineconfig.groovy
             - name: core-config
               mountPath:  /usr/local/tomcat/conf/server.xml
