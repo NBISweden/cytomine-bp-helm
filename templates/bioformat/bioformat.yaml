@@ -41,6 +41,18 @@ spec:
           env:
           - name: BIOFORMAT_PORT
             value: "{{ .Values.bioformat.port }}"
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.bioformat.port }}
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            timeoutSeconds: 8
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.bioformat.port }}
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.bioformat.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
