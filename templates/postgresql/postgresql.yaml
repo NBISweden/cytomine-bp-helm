@@ -35,13 +35,23 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: "/postgres-data/"
-          env:
-          - name: DATA_DIR
-            value: "/var/lib/postgresql/10/main"
           command: ["/bin/bash"]
           # if the persistent volume seems empty, copy the data from the default
           # to the persistent volume, then start postgres using it.
-          args: ["-c", "[ ! -f /postgres-data/PG_VERSION ] && cp -r $DATA_DIR/* /postgres-data; /usr/lib/postgresql/10/bin/postgres -D /postgres-data -c config_file=/etc/postgresql/10/main/postgresql.conf"]
+          args:
+            - -x
+            - -c
+            - >
+                [ ! -f /postgres-data/main/PG_VERSION ] &&
+                mkdir -p /postgres-data/main &&
+                cp -r /var/lib/postgresql/10/main/* /postgres-data/main &&
+                chmod og-rwx /postgres-data/main;
+                mkdir -p /tmp/pgconf &&
+                cp -r /etc/postgresql/10/main/* /tmp/pgconf &&
+                sed -i -e s,/var/lib/postgresql/10,/postgres-data,
+                /tmp/pgconf/postgresql.conf &&
+                /usr/lib/postgresql/10/bin/postgres -D /postgres-data/main
+                -c config_file=/tmp/pgconf/postgresql.conf
           ports:
             - name: postgres
               containerPort: 5432
