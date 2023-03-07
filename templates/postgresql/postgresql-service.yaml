@@ -8,7 +8,7 @@ spec:
     app: {{ include "cytomine.name" . }}-postgis
   ports:
     - name: postgresql
-      port: 5432
+      port: {{ .Values.postgresql.port }}
       targetPort: 5432
       protocol: TCP
 {{ end }}

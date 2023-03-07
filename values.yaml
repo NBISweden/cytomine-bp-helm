@@ -9,7 +9,6 @@
 global:
   domainName: "cytomine.test"
   use_tls: false
-  minikube: true
   affinity: {}
   tolerations: {}
 readOnceStorageClass: ""
@@ -46,7 +45,7 @@ memcached:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/memcached
-    tag: v1.1.2
+    tag: v1.2.0
   resources:
     requests:
       memory: "256Mi"
@@ -64,7 +63,7 @@ rabbitmq:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/rabbitmq
-    tag: v1.1.2
+    tag: v1.2.0
   resources:
     requests:
       memory: "512Mi"
@@ -75,10 +74,11 @@ rabbitmq:
 
 postgresql:
   deploy: true
+  port: 5432
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/postgis
-    tag: v2.0.0
+    tag: v2.1.0
   resources:
     requests:
       memory: "256Mi"
@@ -109,7 +109,7 @@ iip_off:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/iipofficial
-    tag: v1.2.0
+    tag: v1.3.0
   resources:
     requests:
       memory: "256Mi"
@@ -124,7 +124,7 @@ iip_cyto:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/iipcyto
-    tag: v1.2.2
+    tag: v1.2.3
   resources:
     requests:
       memory: "256Mi"
@@ -139,7 +139,7 @@ bioformat:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/bioformat
-    tag: v1.1.2
+    tag: v1.2.0
   resources:
     requests:
       memory: "128Mi"
@@ -154,13 +154,13 @@ core:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/core
-    tag: v3.0.3
+    tag: v3.2.3
   resources:
     requests:
-      memory: "1Gi"
+      memory: "2Gi"
       cpu: "500m"
     limits:
-      memory: "1Gi"
+      memory: "2Gi"
       cpu: "500m"
   # These variables default to a uuid (v4) if not set
   adminPassword: null
@@ -179,13 +179,13 @@ ims:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/ims
-    tag: v1.2.6
+    tag: v2.0.0
   resources:
     requests:
-      memory: "768Mi"
+      memory: "2Gi"
       cpu: "100m"
     limits:
-      memory: "768Mi"
+      memory: "2Gi"
       cpu: "200m"
 
 nginx:
@@ -195,7 +195,7 @@ nginx:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/nginx
-    tag: v1.3.1
+    tag: v1.4.0
   resources:
     requests:
       memory: "256Mi"
@@ -210,7 +210,7 @@ web_ui:
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/web_ui
-    tag: v1.2.1
+    tag: v1.4.0
   resources:
     requests:
       memory: "256Mi"

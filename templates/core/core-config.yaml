@@ -6,12 +6,12 @@
 
 {{ if .Values.core.deploy }}
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: {{ include "cytomine.name" . }}-core-config
-data:
+stringData:
   cytomineconfig.groovy: |-
-    dataSource.url="jdbc:postgresql://{{ include "cytomine.name" . }}-postgis:5432/docker"
+    dataSource.url="jdbc:postgresql://{{ include "cytomine.name" . }}-postgis:{{ .Values.postgresql.port }}/docker"
     dataSource.username="docker"
     dataSource.password="docker"
 
@@ -59,37 +59,34 @@ data:
     grails.messageBrokerServerURL="{{ include "cytomine.name" . }}-rabbitmq:{{ .Values.rabbitmq.port }}"
 
     grails.serverID="{{ .Values.nginx.serverID | default uuidv4 }}"
-
+  server.xml: |{{ .Files.Get "configs/core-server.xml" | nindent 4 }}
 {{ end }}
 ---
 {{ if .Values.ims.deploy }}
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: {{ include "cytomine.name" . }}-ims-config
-data:
-  imageserverconfig.properties: |-
-    dataSource.url=jdbc:h2:/tmp/devDb;MVCC=TRUE;LOCK_TIMEOUT=10000
-    cytomine.vips=/usr/local/bin/vips
-    cytomine.identify=identify
-    cytomine.tiffinfo=tiffinfo
-    cytomine.vipsthumbnail=/usr/local/bin/vipsthumbnail
-    cytomine.hdf5.scriptToFindFiles=webapps/ROOT/WEB-INF/scripts/relatedFiles.sh
+stringData:
+  ims-config.groovy: |-
+    cytomine.ims.server.url = "http://{{ include "cytomine.name" . }}-ims"
+    cytomine.ims.server.core.url = "{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
+    cytomine.ims.server.publicKey = "{{ $imsPub }}"
+    cytomine.ims.server.privateKey = "{{ $imsSec }}"
 
-    cytomine.coreURL={{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}
-    cytomine.storagePath=/data/images
-    cytomine.storageBufferPath=/tmp/uploaded
-    cytomine.imageServerPublicKey={{ $imsPub }}
-    cytomine.imageServerPrivateKey={{ $imsSec }}
-    cytomine.iipImageServerBase=http://{{ template "cytomine.name" . }}-iip-official:{{ .Values.iip_off.port }}/fcgi-bin/iipsrv.fcgi
-    cytomine.iipImageServerCyto=http://{{ template "cytomine.name" . }}-iip-cyto:{{ .Values.iip_cyto.port }}/fcgi-bin/iipsrv.fcgi
+    cytomine.ims.path.buffer = "/data/images/_buffer"
+    cytomine.ims.path.storage = "/data/images"
 
-    bioformat.application.enabled={{ .Values.bioformat.deploy }}
-    bioformat.application.location={{ template "cytomine.name" . }}-bioformat
-    bioformat.application.port={{ .Values.bioformat.port }}
+    cytomine.ims.conversion.bioformats.enabled = {{ .Values.bioformat.deploy }}
+    cytomine.ims.conversion.bioformats.hostname = "{{ include "cytomine.name" . }}-bioformat"
+    cytomine.ims.conversion.bioformats.port = {{ .Values.bioformat.port }}
 
-    cytomine.Jpeg2000Enabled=false
-    cytomine.deleteImageFilesFrequency=600000
+    cytomine.ims.pyramidalTiff.iip.url = "http://{{ template "cytomine.name" . }}-iip-official:{{ .Values.iip_off.port }}/fcgi-bin/iipsrv.fcgi"
+    cytomine.ims.openslide.iip.url = "http://{{ template "cytomine.name" . }}-iip-cyto:{{ .Values.iip_cyto.port }}/fcgi-bin/iipsrv.fcgi"
+
+    //cytomine.ims.jpeg2000.iip.url = "http://localhost-iip-jp2000/fcgi-bin/iipsrv.fcgi"
+
+    cytomine.ims.jpeg2000.enabled = false
 
 {{ end }}
 ---

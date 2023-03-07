@@ -36,6 +36,13 @@ spec:
         - name: {{ .Chart.Name }}-k8s-software-router
           image: "{{ .Values.k8s_software_router.image.repository }}:{{ .Values.k8s_software_router.image.tag }}"
           imagePullPolicy: {{ .Values.k8s_software_router.image.pullPolicy }}
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - python3
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
           volumeMounts:
             - name: k8s-software-router-secret
               mountPath: /app/settings.yaml
