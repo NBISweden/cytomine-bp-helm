@@ -74,6 +74,7 @@ rabbitmq:
 
 postgresql:
   deploy: true
+  port: 5432
   image:
     pullPolicy: IfNotPresent
     repository: cytomine/postgis
