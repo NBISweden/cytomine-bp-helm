@@ -149,5 +149,5 @@ It takes 5~6 min to deploy all the pods. In case, there is a problem with the ra
 
 Username to login is `admin` and the password can be retrived by running the command:
 ```
-kubectl -n default get configmap/cytomine-core-config -o jsonpath="{.data}" | grep -oE 'adminPassword=\\\"[0-9a-zA-Z]+\\\"'
+kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
 ```
