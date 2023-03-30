@@ -43,7 +43,7 @@ memcached:
   deploy: true
   port: 11211
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/memcached
     tag: v1.2.0
   resources:
@@ -61,7 +61,7 @@ rabbitmq:
   username: router
   password: router
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/rabbitmq
     tag: v1.2.0
   resources:
@@ -76,7 +76,7 @@ postgresql:
   deploy: true
   port: 5432
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/postgis
     tag: v2.1.0
   resources:
@@ -92,7 +92,7 @@ mongodb:
   port: 27017
   statusPort: 28017
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/mongodb
     tag: v1.1.2
   resources:
@@ -107,7 +107,7 @@ iip_off:
   deploy: true
   port: 8083
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/iipofficial
     tag: v1.3.0
   resources:
@@ -122,7 +122,7 @@ iip_cyto:
   deploy: true
   port: 8084
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/iipcyto
     tag: v1.2.3
   resources:
@@ -137,7 +137,7 @@ bioformat:
   deploy: true
   port: 4321
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/bioformat
     tag: v1.2.0
   resources:
@@ -152,7 +152,7 @@ core:
   deploy: true
   port: 8001
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/core
     tag: v3.2.3
   resources:
@@ -177,7 +177,7 @@ ims:
   deploy: true
   port: 8081
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/ims
     tag: v2.0.0
   resources:
@@ -193,7 +193,7 @@ nginx:
   port: 8000
   serverID: null
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/nginx
     tag: v1.4.0
   resources:
@@ -208,7 +208,7 @@ web_ui:
   deploy: true
   port: 8080
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: cytomine/web_ui
     tag: v1.4.0
   resources:
@@ -222,7 +222,7 @@ web_ui:
 k8s_software_router:
   deploy: true
   image:
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     repository: norling/k8s-software-router
     tag: latest
   github_username: ""
@@ -248,3 +248,14 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname
   # template
   name: ""
+
+security:
+  runAsNonRoot: true  # do not allow the container to run as root
+  allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
+  privileged: false  # the container is not privileged (usually the default)
+  runAsUser: 1000  # run as user
+  runAsGroup: 2000  # run as group
+  fsGroup: 1000 #file system group ID
+  capabilities:  # drop all extra capabilities
+    drop:
+      - all
