@@ -259,3 +259,8 @@ security:
   capabilities:  # drop all extra capabilities
     drop:
       - all
+
+podSecurity:
+  runAsUser: 10000
+  fsUserGroup: 30000
+  runAsGroup: 20000
