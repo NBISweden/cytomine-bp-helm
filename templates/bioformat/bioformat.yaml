@@ -45,6 +45,9 @@ spec:
           env:
           - name: BIOFORMAT_PORT
             value: "{{ .Values.bioformat.port }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
           livenessProbe:
             tcpSocket:
               port: {{ .Values.bioformat.port }}
