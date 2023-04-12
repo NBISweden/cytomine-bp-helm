@@ -51,13 +51,13 @@ spec:
                 sed -i -e s,/var/lib/postgresql/10,/postgres-data,
                 /tmp/pgconf/postgresql.conf &&
                 /usr/lib/postgresql/10/bin/postgres -D /postgres-data/main
-                -c config_file=/tmp/pgconf/postgresql.conf
+                -c config_file=/etc/postgresql/10/main/postgresql.conf
           ports:
             - name: postgres
               containerPort: 5432
               protocol: TCP
           securityContext:
-            runAsUser: 101
+             runAsUser: 101
           livenessProbe:
             exec:
               command:
