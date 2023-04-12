@@ -38,8 +38,6 @@ spec:
         - name: {{ .Chart.Name }}-core
           image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
           imagePullPolicy: {{ .Values.core.image.pullPolicy }}
-          securityContext:
-            privileged: true
           volumeMounts:
             - name: core-config
               mountPath:  /usr/share/tomcat9/.grails/cytomineconfig.groovy
