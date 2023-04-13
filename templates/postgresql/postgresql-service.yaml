@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: {{ include "cytomine.name" . }}-postgis
 spec:
+  clusterIP: None
   selector:
     app: {{ include "cytomine.name" . }}-postgis
   ports:
