@@ -51,7 +51,21 @@ spec:
           command: ["/bin/sh"]
           args: ["-c", "cp /config-temp/nginx.conf.sample /tmp/nginx.conf.sample && /tmp/deploy.sh"]
           securityContext:
+<<<<<<< HEAD
             privileged: true
+=======
+<<<<<<< HEAD
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:  # drop all extra capabilities
+              drop:
+                - all
+            privileged: false
+=======
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+>>>>>>> ee596e0... Templated container security contexts
+>>>>>>> 9a7136d... Templated container security contexts
           env:
           - name: NB_IIP_PROCESS
             value: "10"

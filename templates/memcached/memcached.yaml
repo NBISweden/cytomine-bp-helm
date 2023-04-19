@@ -49,7 +49,8 @@ spec:
           command: ["/usr/bin/memcached"]
           args: ["-p", "{{ .Values.memcached.port }}"]
           securityContext:
-            runAsUser: 497
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           resources:
             {{- toYaml .Values.memcached.resources | nindent 12 }}
           livenessProbe:
