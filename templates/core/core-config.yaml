@@ -30,7 +30,7 @@ stringData:
 
 
     grails.serverURL="{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
-    grails.imageServerURL=["{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"]
+    grails.imageServerURL=["http://{{ include "cytomine.name" . }}-ims:{{ .Values.ims.port }}"]
     grails.uploadURL="{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
 
     storage_buffer="/data/images/_buffer"
@@ -69,7 +69,7 @@ metadata:
   name: {{ include "cytomine.name" . }}-ims-config
 stringData:
   ims-config.groovy: |-
-    cytomine.ims.server.url = "http://{{ include "cytomine.name" . }}-ims"
+    cytomine.ims.server.url = "http://{{ include "cytomine.name" . }}-ims:{{ .Values.ims.port }}"
     cytomine.ims.server.core.url = "{{ include "cytomine.protocol" . }}://{{ .Values.global.domainName }}"
     cytomine.ims.server.publicKey = "{{ $imsPub }}"
     cytomine.ims.server.privateKey = "{{ $imsSec }}"
