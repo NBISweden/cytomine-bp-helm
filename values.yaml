@@ -249,7 +249,7 @@ serviceAccount:
   # template
   name: ""
 
-security:
+containerSecurity:
   runAsNonRoot: true  # do not allow the container to run as root
   allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
   privileged: false  # the container is not privileged (usually the default)
