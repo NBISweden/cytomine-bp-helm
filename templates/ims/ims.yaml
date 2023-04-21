@@ -27,10 +27,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      securityContext:
-          runAsUser: {{ .Values.podSecurity.runAsUser }}
-          runAsGroup: {{ .Values.podSecurity.runAsGroup }}
-          fsGroup: {{ .Values.podSecurity.fsUserGroup }}
       volumes:
         - name: images
           persistentVolumeClaim:
@@ -48,20 +44,20 @@ spec:
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
-          livenessProbe:
-            initialDelaySeconds: 600
-            failureThreshold: 30
-            periodSeconds: 8
-            httpGet:
-              path: /
-              port: 8080
-          readinessProbe:
-            failureThreshold: 4
-            initialDelaySeconds: 150
-            periodSeconds: 10
-            httpGet:
-              path: /
-              port: 8080
+          # livenessProbe:
+          #   initialDelaySeconds: 600
+          #   failureThreshold: 30
+          #   periodSeconds: 8
+          #   httpGet:
+          #     path: /
+          #     port: 8080
+          # readinessProbe:
+          #   failureThreshold: 4
+          #   initialDelaySeconds: 150
+          #   periodSeconds: 10
+          #   httpGet:
+          #     path: /
+          #     port: 8080
           volumeMounts:
             - name: images
               mountPath: "/data/images"
