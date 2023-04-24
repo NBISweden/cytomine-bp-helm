@@ -250,17 +250,6 @@ serviceAccount:
   name: ""
 
 containerSecurity:
-  runAsNonRoot: true  # do not allow the container to run as root
   allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
   privileged: false  # the container is not privileged (usually the default)
-  runAsUser: 1000  # run as user
-  runAsGroup: 2000  # run as group
-  fsGroup: 1000 #file system group ID
-  capabilities:  # drop all extra capabilities
-    drop:
-      - all
 
-podSecurity:
-  runAsUser: 10000
-  fsUserGroup: 30000
-  runAsGroup: 20000
