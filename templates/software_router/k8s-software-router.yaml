@@ -27,10 +27,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      securityContext:
-          runAsUser: {{ .Values.podSecurity.runAsUser }}
-          runAsGroup: {{ .Values.podSecurity.runAsGroup }}
-          fsGroup: {{ .Values.podSecurity.fsUserGroup }}
       volumes:
         - name: k8s-software-router-secret
           secret:
