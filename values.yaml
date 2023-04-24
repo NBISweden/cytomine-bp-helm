@@ -44,6 +44,7 @@ memcached:
   port: 11211
   image:
     pullPolicy: Always
+    user: 497
     repository: cytomine/memcached
     tag: v1.2.0
   resources:
@@ -93,8 +94,8 @@ mongodb:
   statusPort: 28017
   image:
     pullPolicy: Always
-    repository: cytomine/mongodb
-    tag: v1.1.2
+    repository: mongo
+    tag: 4.4.18-focal
   resources:
     requests:
       memory: "256Mi"

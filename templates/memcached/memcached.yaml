@@ -45,6 +45,7 @@ spec:
           command: ["/usr/bin/memcached"]
           args: ["-p", "{{ .Values.memcached.port }}"]
           securityContext:
+            runAsUser: {{ .Values.memcached.image.user }}
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
           resources:
