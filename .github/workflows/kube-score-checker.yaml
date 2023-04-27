@@ -1,0 +1,20 @@
+name: helm_kube_score
+
+on:
+  push:
+    branches:
+      - workflow/kube-score
+
+jobs:
+  kube-score:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Run kube-score
+          run: |
+              wget https://github.com/zegl/kube-score/releases/download/v1.16.1/kube-score_1.16.1_linux_amd64.tar.gz
+              tar xvf ./kube-score_1.16.1_linux_amd64.tar.gz && mv kube-score /usr/local/bin
+              helm template cytomine . | kube-score score -
