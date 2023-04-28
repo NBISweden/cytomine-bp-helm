@@ -47,7 +47,8 @@ spec:
           command: ["/bin/sh"]
           args: ["-c", "cp /config-temp/nginx.conf.sample /tmp/nginx.conf.sample && /tmp/deploy.sh"]
           securityContext:
-            privileged: true
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           env:
           - name: NB_IIP_PROCESS
             value: "10"

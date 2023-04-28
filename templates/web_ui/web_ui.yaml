@@ -45,10 +45,11 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.web_ui.port }}
-          securityContext:
-            privileged: true
           resources:
             {{- toYaml .Values.web_ui.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           livenessProbe:
             httpGet:
               path: /
