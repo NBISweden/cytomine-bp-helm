@@ -21,5 +21,7 @@ jobs:
               tar xvf ./kube-score_1.16.1_linux_amd64.tar.gz && mv kube-score /usr/local/bin
         - name: Run kube-score
           run: |
+              cd charts
+              cd cytomine
               helm template cytomine . | kube-score score -
         
