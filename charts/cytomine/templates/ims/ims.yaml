@@ -41,13 +41,9 @@ spec:
         - name: {{ .Chart.Name }}-ims
           image: "{{ .Values.ims.image.repository }}:{{ .Values.ims.image.tag }}"
           imagePullPolicy: {{ .Values.ims.image.pullPolicy }}
-          livenessProbe:
-            initialDelaySeconds: 600
-            failureThreshold: 30
-            periodSeconds: 8
-            httpGet:
-              path: /
-              port: 8080
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           readinessProbe:
             failureThreshold: 4
             initialDelaySeconds: 150

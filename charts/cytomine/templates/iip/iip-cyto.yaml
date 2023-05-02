@@ -1,25 +1,25 @@
-{{ if .Values.iip_off.deploy }}
+{{ if .Values.iip_cyto.deploy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cytomine.name" . }}-iip-official
+  name: {{ include "cytomine.name" . }}-iip-cyto
   labels:
-    role: iip-official
+    role: iip-cyto
     app: {{ include "cytomine.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: {{ .Release.Name }}-iip-official
+    component: {{ .Release.Name }}-iip-cyto
     release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "cytomine.name" . }}-iip-official
+      app: {{ template "cytomine.name" . }}-iip-cyto
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        role: iip-official
-        app: {{ template "cytomine.name" . }}-iip-official
+        role: iip-cyto
+        app: {{ template "cytomine.name" . }}-iip-cyto
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
@@ -33,11 +33,11 @@ spec:
             claimName: {{ template "cytomine.name" . }}-image-claim
         - name: nginx-config
           configMap:
-            name: {{ include "cytomine.name" . }}-iip-official-config
+            name: {{ include "cytomine.name" . }}-iip-cyto-config
       containers:
-        - name: {{ .Chart.Name }}-iip-official
-          image: "{{ .Values.iip_off.image.repository }}:{{ .Values.iip_off.image.tag }}"
-          imagePullPolicy: {{ .Values.iip_off.image.pullPolicy }}
+        - name: {{ .Chart.Name }}-iip-cyto
+          image: "{{ .Values.iip_cyto.image.repository }}:{{ .Values.iip_cyto.image.tag }}"
+          imagePullPolicy: {{ .Values.iip_cyto.image.pullPolicy }}
           volumeMounts:
             - name: images
               mountPath: "/data/images"
@@ -47,7 +47,8 @@ spec:
           command: ["/bin/sh"]
           args: ["-c", "cp /config-temp/nginx.conf.sample /tmp/nginx.conf.sample && /tmp/deploy.sh"]
           securityContext:
-            privileged: true
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           env:
           - name: NB_IIP_PROCESS
             value: "10"
@@ -55,9 +56,9 @@ spec:
             value: {{ template "cytomine.name" . }}-memcached:{{ .Values.memcached.port }}
           ports:
             - name: http
-              containerPort: {{ .Values.iip_off.port }}
+              containerPort: {{ .Values.iip_cyto.port }}
           resources:
-            {{- toYaml .Values.iip_off.resources | nindent 12 }}
+            {{- toYaml .Values.iip_cyto.resources | nindent 12 }}
           # livenessProbe:
           #   httpGet:
           #     path: /

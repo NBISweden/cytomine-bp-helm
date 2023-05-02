@@ -57,7 +57,7 @@ spec:
               containerPort: 5432
               protocol: TCP
           securityContext:
-            runAsUser: 101
+             runAsUser: 101
           livenessProbe:
             exec:
               command:

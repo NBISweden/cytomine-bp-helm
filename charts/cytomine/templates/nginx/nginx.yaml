@@ -45,6 +45,9 @@ spec:
               subPath: nginx.conf
             - name: image-temp
               mountPath: "/tmp/uploaded"
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           ports:
             - name: http
               containerPort: {{ .Values.nginx.port }}
