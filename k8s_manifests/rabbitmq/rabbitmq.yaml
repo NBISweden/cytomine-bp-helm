@@ -1,0 +1,83 @@
+---
+# Source: cytomine/templates/rabbitmq/rabbitmq.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cytomine-rabbitmq
+  labels:
+    role: rabbitmq
+    app: cytomine
+    chart: cytomine-0.2.0
+    component: cytomine-rabbitmq
+    release: cytomine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cytomine-rabbitmq
+      release: cytomine
+  template:
+    metadata:
+      labels:
+        role: rabbitmq
+        app: cytomine-rabbitmq
+        release: cytomine
+    spec:
+      #serviceAccountName: cytomine
+      volumes:
+      #   - name: rabbitmq-secret
+      #     secret:
+      #       secretName: cytomine-rabbitmq-secret
+        - name: rabbitmq-log
+          emptyDir: {}
+      containers:
+        - name: cytomine-rabbitmq
+          image: "rabbitmq:3.10"
+          imagePullPolicy: Always
+          env:
+          - name: RABBITMQ_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-secret
+                key: private_key
+          - name: RABBITMQ_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-secret
+                key: public_key
+          # env:
+          # - name: RABBITMQ_PID_FILE
+          #   value: "/var/lib/rabbitmq/mnesia/rabbit@c12b9c650697.pid"
+          volumeMounts:
+            # - name: rabbitmq-secret
+            #   mountPath: /init.sh
+            #   subPath: init.sh
+            - name: rabbitmq-log
+              mountPath: "/var/log/rabbitmq"
+          # command: ["rab"]
+          #args: ["-c", "/init.sh"]
+          ports:
+            - name: amqp
+              containerPort: 5672
+              protocol: TCP
+            - name: management
+              containerPort: 15672
+          # securityContext:
+          #   runAsUser: 102
+          resources:
+            limits:
+              cpu: 400m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: amqp
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   tcpSocket:
+          #     port: amqp
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 15
