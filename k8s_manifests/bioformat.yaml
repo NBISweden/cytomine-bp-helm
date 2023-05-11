@@ -1,0 +1,62 @@
+---
+# Source: cytomine/templates/bioformat/bioformat.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cytomine-bioformat
+  labels:
+    role: bioformat
+    app: cytomine
+    chart: cytomine-0.2.0
+    component: cytomine-bioformat
+    release: cytomine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cytomine-bioformat
+      release: cytomine
+  template:
+    metadata:
+      labels:
+        role: bioformat
+        app: cytomine-bioformat
+        release: cytomine
+    spec:
+      #serviceAccountName: cytomine
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: cytomine-image-claim
+      containers:
+        - name: cytomine-bioformat
+          image: "cytomine/bioformat:v1.2.0"
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: images
+              mountPath: "/data/images"
+          env:
+          - name: BIOFORMAT_PORT
+            value: "4321"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+          livenessProbe:
+            tcpSocket:
+              port: 4321
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            timeoutSeconds: 8
+          readinessProbe:
+            tcpSocket:
+              port: 4321
+            initialDelaySeconds: 30
+            failureThreshold: 10
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
