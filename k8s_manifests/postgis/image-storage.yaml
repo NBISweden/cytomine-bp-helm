@@ -1,0 +1,12 @@
+---
+# Source: cytomine/templates/storage/image-storage-claim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cytomine-image-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
