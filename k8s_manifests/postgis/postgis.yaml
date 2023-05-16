@@ -1,0 +1,96 @@
+---
+# Source: cytomine/templates/postgresql/postgresql.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cytomine-postgis
+  labels:
+    role: postgresql
+    app: cytomine
+    chart: cytomine-0.2.0
+    component: cytomine-postgis
+    release: cytomine
+spec:
+  replicas: 1
+  serviceName: cytomine-postgis
+  selector:
+    matchLabels:
+      app: cytomine-postgis
+      release: cytomine
+  template:
+    metadata:
+      labels:
+        role: postgresql
+        app: cytomine-postgis
+        release: cytomine
+    spec:
+      containers:
+        - name: cytomine-postgis
+          image: "cytomine/postgis:15-3.3-alpine-1.2.0"
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql"
+          # command: ["/bin/bash"]
+          env:
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgis-secret
+                key: password
+          # if the persistent volume seems empty, copy the data from the default
+          # to the persistent volume, then start postgres using it.
+          # args:
+          #   - -x
+          #   - -c
+          #   - >
+          #       [ ! -f /postgres-data/main/PG_VERSION ] &&
+          #       mkdir -p /postgres-data/main &&
+          #       cp -r /var/lib/postgresql/10/main/* /postgres-data/main &&
+          #       chmod og-rwx /postgres-data/main;
+          #       mkdir -p /tmp/pgconf &&
+          #       cp -r /etc/postgresql/10/main/* /tmp/pgconf &&
+          #       sed -i -e s,/var/lib/postgresql/10,/postgres-data,
+          #       /tmp/pgconf/postgresql.conf &&
+          #       /usr/lib/postgresql/10/bin/postgres -D /postgres-data/main
+          #       -c config_file=/tmp/pgconf/postgresql.conf
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+---
+# Source: cytomine/templates/postgresql/postgresql-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cytomine-postgis
+spec:
+  clusterIP: None
+  selector:
+    app: cytomine-postgis
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgis-secret
+type: Opaque
+data:
+  password: NHVrMjMydmJjZVFhWTBGM3R4bThLcEsraWZyc3N3M1Jxby9NR2VTd1RlZz0=
