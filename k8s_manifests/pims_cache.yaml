@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cytomine-pims-cache
+  labels:
+    role: pims-cache
+    app: cytomine
+    component: cytomine-pims-cachce
+    release: cytomine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cytomine-pims-cache
+      release: cytomine
+  template:
+    metadata:
+      labels:
+        role: pims-cache
+        app: cytomine-pims-cache
+        release: cytomine
+    spec:
+      #serviceAccountName: cytomine
+      volumes:
+      - name: cytomine-web-ui-localtime
+        hostPath:
+          path: /etc/localtime
+      containers:
+        - name: cytomine-pims-cache
+          image: "redis:7.0.8"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 6379
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+---
+# Source: cytomine/templates/web_ui/web_ui-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cytomine-pims-cache
+spec:
+  selector:
+    app: cytomine-pims-cache
+  ports:
+    - name: http
+      port: 6379
+      targetPort: 6379
+      protocol: TCP

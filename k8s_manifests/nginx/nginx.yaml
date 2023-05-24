@@ -23,7 +23,7 @@ spec:
         app: cytomine-nginx
         release: cytomine
     spec:
-      serviceAccountName: cytomine
+      # serviceAccountName: cytomine
       volumes:
       - name: cytomine-nginx-config
         configMap:
@@ -37,29 +37,28 @@ spec:
           imagePullPolicy: Always
           env:
           - name: INTERNAL_URLS_WEB_UI
-            value: web-ui
+            value: "$(CYTOMINE_WEB_UI_SERVICE_HOST):$(CYTOMINE_WEB_UI_SERVICE_PORT)"
           - name: INTERNAL_URLS_CORE
-            value: web-ui
+            value: "$(CYTOMINE_CORE_SERVICE_HOST):$(CYTOMINE_CORE_SERVICE_PORT)"
           - name: INTERNAL_URLS_IMS
-            value: core:8080
+            value: "$(CYTOMINE_PIMS_SERVICE_HOST):$(CYTOMINE_PIMS_SERVICE_PORT)"
           - name: URLS_CORE
             value: cytomine.local
           - name: URLS_IMAGE_SERVER
             value: ims.cytomine.local
           - name: URLS_UPLOAD
             value: upload.cytomine.local
-          - name: UPLOADS_PATH
+          - name: UPLOAD_PATH
             value: /tmp/uploaded
-          #command: ["/c/"]
           volumeMounts:
             - name: cytomine-nginx-config
               mountPath: "/cm_configs/etc/nginx/nginx.conf"
               subPath: nginx.conf
             - name: image-temp
               mountPath: "/tmp/uploaded"
-          securityContext:
-            allowPrivilegeEscalation: false
-            privileged: false
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   privileged: false
           ports:
             - name: http
               containerPort: 80
