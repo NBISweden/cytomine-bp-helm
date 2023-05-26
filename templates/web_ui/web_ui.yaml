@@ -31,16 +31,23 @@ spec:
       - name: {{ include "cytomine.name" . }}-web-ui-config
         configMap:
           name: {{ include "cytomine.name" . }}-web-ui-config
+      - name: {{ include "cytomine.name" . }}-web-ui-localtime
+        hostPath:
+          path: /etc/localtime
       containers:
         - name: {{ .Chart.Name }}-web-ui
           image: "{{ .Values.web_ui.image.repository }}:{{ .Values.web_ui.image.tag }}"
           imagePullPolicy: {{ .Values.web_ui.image.pullPolicy }}
+          env:
+          - name: URL_CORE
+            value: {{ .Values.web_ui.url_core }}
+          - name: URL_UPLOAD
+            value: {{ .Values.web_ui.url_upload }}
           volumeMounts:
+            - name: {{ include "cytomine.name" . }}-web-ui-localtime
+              mountPath: /etc/localtime
             - name: {{ include "cytomine.name" . }}-web-ui-config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-            - name: {{ include "cytomine.name" . }}-web-ui-config
-              mountPath: /app/configuration.json
+              mountPath: /cmconfigs/app/configuration.json
               subPath: configuration.json
           ports:
             - name: http
