@@ -1,0 +1,46 @@
+{{ if .Values.pims_cache.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-pims-cache
+  labels:
+    role: pims-cache
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-pims-cache
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-pims-cache
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: pims-cache
+        app: {{ template "cytomine.name" . }}-pims-cache
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-web-ui
+          image: "{{ .Values.pims_cache.image.repository }}:{{ .Values.pims_cache.image.tag }}"
+          imagePullPolicy: {{ .Values.pims_cache.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.pims_cache.port }}
+          resources:
+            {{- toYaml .Values.pims_cache.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{ end }}
