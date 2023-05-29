@@ -28,25 +28,37 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: singularity-images
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}-singularity-claim
       - name: core-config
         secret:
           secretName: {{ include "cytomine.name" . }}-core-config
+      - name: {{ include "cytomine.name" . }}-core-localtime
+        hostPath:
+          path: /etc/localtime
       containers:
         - name: {{ .Chart.Name }}-core
           image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
           imagePullPolicy: {{ .Values.core.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: cytomine-core-env
+          # command: [ "sh", "-c"]
+          # args:
+          # - while true; do
+          #     echo -en '\n';
+          #     printenv JAVAMELODY_PATH STORAGE_PATH;
+          #     sleep 10;
+          #   done;
           volumeMounts:
             - name: core-config
-              mountPath:  /usr/share/tomcat9/.grails/cytomineconfig.groovy
-              subPath: cytomineconfig.groovy
+              mountPath:  /cm_configs/app/application.yml.sample
+              subPath: application.yml.sample
             - name: core-config
-              mountPath:  /usr/local/tomcat/conf/server.xml
-              subPath: server.xml
-            - name: singularity-images
-              mountPath: "/data/softwares/images"
+              mountPath:  /cm_configs/app/logback.xml
+              subPath: logback.xml
+            - name: {{ include "cytomine.name" . }}-core-localtime
+              mountPath: /etc/localtime
+            # - name: singularity-images
+            #   mountPath: "/data/softwares/images"
           ports:
             - name: http
               containerPort: {{ .Values.core.port }}
