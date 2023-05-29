@@ -1,25 +1,25 @@
-{{ if .Values.ims.deploy }}
+{{ if .Values.pims.deploy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cytomine.name" . }}-ims
+  name: {{ include "cytomine.name" . }}-pims
   labels:
-    role: ims
+    role: pims
     app: {{ include "cytomine.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: {{ .Release.Name }}-ims
+    component: {{ .Release.Name }}-pims
     release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "cytomine.name" . }}-ims
+      app: {{ template "cytomine.name" . }}-pims
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        role: ims
-        app: {{ template "cytomine.name" . }}-ims
+        role: pims
+        app: {{ template "cytomine.name" . }}-pims
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
@@ -34,46 +34,40 @@ spec:
         - name: image-temp
           persistentVolumeClaim:
             claimName: {{ template "cytomine.name" . }}-temp-image-claim
-        - name: ims-config
-          secret:
-            secretName: {{ template "cytomine.name" . }}-ims-config
+        - name: pims-logging
+          configMap:
+            name: {{ template "cytomine.name" . }}-pims-logging
       containers:
-        - name: {{ .Chart.Name }}-ims
-          image: "{{ .Values.ims.image.repository }}:{{ .Values.ims.image.tag }}"
-          imagePullPolicy: {{ .Values.ims.image.pullPolicy }}
+        - name: {{ .Chart.Name }}-pims
+          image: "{{ .Values.pims.image.repository }}:{{ .Values.pims.image.tag }}"
+          imagePullPolicy: {{ .Values.pims.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: cytomine-pims-config
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgresql.user }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cytomine.name" . }}-postgresql-secret
+                  key: password
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
-          # livenessProbe:
-          #   initialDelaySeconds: 600
-          #   failureThreshold: 30
-          #   periodSeconds: 8
-          #   httpGet:
-          #     path: /
-          #     port: 8080
-          # readinessProbe:
-          #   failureThreshold: 4
-          #   initialDelaySeconds: 150
-          #   periodSeconds: 10
-          #   httpGet:
-          #     path: /
-          #     port: 8080
           volumeMounts:
             - name: images
               mountPath: "/data/images"
             - name: image-temp
               mountPath: "/tmp/uploaded"
-            - name: ims-config
-              mountPath: /usr/share/tomcat9/.grails/ims-config.groovy
-              subPath: ims-config.groovy
+            - name: pims-logging
+              mountPath: /cm_configs/app/logging.yml
+              subPath: logging.yml
           ports:
             - name: http
-              containerPort: 8080
-          env:
-          - name: IMS_STORAGE_PATH
-            value: /data/images
+              containerPort: 5000
           resources:
-            {{- toYaml .Values.ims.resources | nindent 12 }}
+            {{- toYaml .Values.pims.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
