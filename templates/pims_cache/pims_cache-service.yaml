@@ -4,7 +4,6 @@ kind: Service
 metadata:
   name: {{ include "cytomine.name" . }}-pims-cache
 spec:
-  clusterIP: None
   selector:
     app: {{ include "cytomine.name" . }}-pims-cache
   ports:

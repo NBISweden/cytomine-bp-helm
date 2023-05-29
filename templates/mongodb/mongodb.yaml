@@ -40,12 +40,19 @@ spec:
             - name: mongodb
               containerPort: 27017
               protocol: TCP
-            - name: status
-              containerPort: 28017
-              protocol: TCP
-          securityContext:
-            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
-            privileged: {{ .Values.containerSecurity.privileged }}
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cytomine.name" . }}-mongodb-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cytomine.name" . }}-mongodb-secret
+                  key: password
+            - name: MONGO_INIT_DATABASE
+              value: "cytomine"
           livenessProbe:
             tcpSocket:
               port: 27017

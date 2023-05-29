@@ -38,25 +38,14 @@ spec:
         - name: {{ .Chart.Name }}-rabbitmq
           image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
           imagePullPolicy: {{ .Values.rabbitmq.image.pullPolicy }}
-          env:
-          - name: RABBITMQ_PID_FILE
-            value: "/var/lib/rabbitmq/mnesia/rabbit@c12b9c650697.pid"
-          volumeMounts:
-            - name: rabbitmq-secret
-              mountPath: /init.sh
-              subPath: init.sh
-            - name: rabbitmq-log
-              mountPath: "/var/log/rabbitmq"
-          command: ["/bin/bash"]
-          args: ["-c", "/init.sh"]
           ports:
             - name: amqp
               containerPort: {{ .Values.rabbitmq.port }}
               protocol: TCP
             - name: management
               containerPort: {{ .Values.rabbitmq.managementPort }}
-          securityContext:
-            runAsUser: 102
+          # securityContext:
+          #   runAsUser: 102
           resources:
             {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           livenessProbe:
