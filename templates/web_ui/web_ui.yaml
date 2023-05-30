@@ -47,7 +47,7 @@ spec:
             - name: {{ include "cytomine.name" . }}-web-ui-localtime
               mountPath: /etc/localtime
             - name: {{ include "cytomine.name" . }}-web-ui-config
-              mountPath: /cmconfigs/app/configuration.json
+              mountPath: /cmconfigs/app/configuration.json.sample
               subPath: configuration.json
           ports:
             - name: http
