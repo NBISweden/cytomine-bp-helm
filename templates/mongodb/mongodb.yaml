@@ -32,7 +32,6 @@ spec:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
           imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
-          command: ["mongod"]
           volumeMounts:
             - name: mongodb-storage
               mountPath: "/data/db"
@@ -42,22 +41,14 @@ spec:
               protocol: TCP
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "cytomine.name" . }}-mongodb-secret
-                  key: username
+              value: mongoadmin
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "cytomine.name" . }}-mongodb-secret
                   key: password
             - name: MONGO_INIT_DATABASE
-              value: "cytomine"
-          livenessProbe:
-            tcpSocket:
-              port: 27017
-            initialDelaySeconds: 15
-            periodSeconds: 60
+              value: cytomine
           resources:
             {{- toYaml .Values.mongodb.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

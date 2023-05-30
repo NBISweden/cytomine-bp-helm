@@ -5,9 +5,154 @@ metadata:
   name: {{ include "cytomine.name" . }}-core-config
 stringData:
   application.yml.sample: |-
-    {{ .Files.Get "configs/application.yml.sample" | nindent 4 }}
+    spring:
+      datasource:
+        url: jdbc:postgresql://$POSTGIS_HOST:$POSTGIS_PORT/$POSTGIS_DB_NAME
+        username: $POSTGIS_USER
+        password: $POSTGIS_PASS
+
+      mail:
+        host: $SMTP_HOST
+        port: $SMTP_PORT
+        username: $SMTP_USER
+        password: $SMPT_PASS
+        auth: true
+
+      data:
+        mongodb:
+          authentication-database: admin
+          username: $MONGO_USER
+          password: $MONGO_PASS
+          database: $MONGO_DB_NAME
+          port: $MONGO_PORT
+          host: $MONGO_HOST
+
+    javamelody:
+      enabled: true      
+      init-parameters:
+        authorized-users: $JAVAMELODY_USER:$JAVAMELODY_PASS
+        storage-directory: $JAVAMELODY_PATH
+
+    logging:
+      config: file:/app/logback.xml
+
+    application:
+      customUI:
+        global:
+          dashboard: ["ALL"]
+          search: [ "ROLE_ADMIN" ]
+          project: [ "ALL" ]
+          ontology: [ "ROLE_ADMIN" ]
+          storage: [ "ROLE_USER","ROLE_ADMIN" ]
+          software: []
+          activity: [ "ALL" ]
+          admin: [ "ROLE_ADMIN" ]
+          help: [ "ALL" ]
+          feedback: ["ROLE_USER","ROLE_ADMIN"]
+          explore: ["ROLE_USER","ROLE_ADMIN"]
+
+      serverId: $SERVER_ID
+      serverURL: $URL_CORE
+      imageServerURL: [$URL_PIMS1, $URL_PIMS2]
+
+      storagePath: $STORAGE_PATH
+      adminPassword: $ADMIN_PASSWORD
+      adminEmail: $ADMIN_EMAIL
+      adminPrivateKey: $ADMIN_PRIVATE_KEY
+      adminPublicKey: $ADMIN_PUBLIC_KEY
+      superAdminPrivateKey: $SUPER_ADMIN_PRIVATE_KEY
+      superAdminPublicKey: $SUPER_ADMIN_PUBLIC_KEY
+      ImageServerPrivateKey: $IMAGE_SERVER_PRIVATE_KEY
+      ImageServerPublicKey: $IMAGE_SERVER_PUBLIC_KEY
+      rabbitMQPrivateKey: $RABBITMQ_PRIVATE_KEY
+      rabbitMQPublicKey: $RABBITMQ_PUBLIC_KEY
+
+      notification:
+        email: your.email@gmail.com
+
+      useHTTPInternally: false
+
+      instanceHostWebsite: $INSTANCE_HOST_WEBSITE_URL
+      instanceHostSupportMail: $INSTANCE_HOST_SUPPORT_MAIL
+      instanceHostPhoneNumber: $INSTANCE_HOST_PHONE_NUMBER
+
+      authentication:
+        jwt:
+          # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+          secret: $JWT_SECRET
+  
   logback.xml: |-
-    {{ .Files.Get "configs/logback.xml" | nindent 4 }}
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE configuration>
+
+    <configuration scan="true">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
+    <!--
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>90</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <charset>utf-8</charset>
+                <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+        <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+            <queueSize>512</queueSize>
+            <appender-ref ref="FILE"/>
+        </appender>
+
+        <root level="${logging.level.root}">
+            <appender-ref ref="ASYNC"/>
+        </root>
+    -->
+        <logger name="org.mongodb" level="WARN"/>
+        <logger name="be.cytomine" level="DEBUG"/>
+        <logger name="javax.activation" level="WARN"/>
+        <logger name="javax.mail" level="WARN"/>
+        <logger name="javax.management.remote" level="WARN"/>
+        <logger name="javax.xml.bind" level="WARN"/>
+        <logger name="ch.qos.logback" level="WARN"/>
+        <logger name="com.ryantenney" level="WARN"/>
+        <logger name="com.sun" level="WARN"/>
+        <logger name="com.zaxxer" level="WARN"/>
+        <logger name="io.undertow" level="WARN"/>
+        <logger name="io.undertow.websockets.jsr" level="ERROR"/>
+        <logger name="org.apache" level="WARN"/>
+        <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
+        <logger name="org.bson" level="WARN"/>
+        <logger name="org.hibernate.validator" level="WARN"/>
+        <logger name="org.hibernate" level="WARN"/>
+        <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
+        <logger name="org.postgresql" level="WARN"/>
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <logger name="org.springframework.security" level="WARN"/>
+        <logger name="org.springframework.web.socket" level="DEBUG"/>
+        <logger name="org.thymeleaf" level="WARN"/>
+        <logger name="org.xnio" level="WARN"/>
+        <logger name="springfox" level="WARN"/>
+        <logger name="sun.rmi" level="WARN"/>
+        <logger name="liquibase" level="WARN"/>
+        <logger name="LiquibaseSchemaResolver" level="INFO"/>
+        <logger name="springfox.documentation.schema.property" level="ERROR"/>
+        <logger name="sun.rmi.transport" level="WARN"/>
+
+        <logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="ERROR"/>
+        <!-->Ignore HHH000179: Narrowing proxy to class be.cytomine.domain.security.User - this operation breaks ==  ; as we have custom equals/hashcode<!-->
+
+        <!-- https://logback.qos.ch/manual/configuration.html#shutdownHook and https://jira.qos.ch/browse/LOGBACK-1090 -->
+        <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+        <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+            <resetJUL>true</resetJUL>
+        </contextListener>
+
+    </configuration>
 {{ end }}
 ---
 {{ if .Values.core.deploy }}
@@ -16,6 +161,41 @@ kind: ConfigMap
 metadata:
   name: {{ include "cytomine.name" . }}-core-env
 data:
-  core.conf: |-
-    {{ .Files.Get "configs/core.conf" | nindent 4 }}
+  ADMIN_EMAIL: info@cytomine.coop
+  ADMIN_PASSWORD: OA9M4A382GFDNAKLmu5a/I1L0yQsXe/pmmxMelm2jwQ=
+  ADMIN_PRIVATE_KEY: ba04b7c3-2188-45c4-ac2e-8a0bfd98afee
+  ADMIN_PUBLIC_KEY: 1bc0d049-fbfe-4c7d-a320-4e034a5feb90
+  INSTANCE_HOST_PHONE_NUMBER: None
+  INSTANCE_HOST_SUPPORT_MAIL: None
+  JWT_SECRET: OLSE'XpvGZckJEH;nYh4Gg9rv_HY'9RAKvy7aPzxFoVNCem8QZQsGyKdqZTrYq9U1wO+bEc;F8nnRE3J4tDUK85ts^1Uc8BOzY8Q2K.v_W'RL;8fedA;VVDIZri0OjKu__tcjdM+Pa3+^^C6hcNrtRF5N^gW~w0WoWn;iNfzyGuhwu4ETMOEjpCXVMStofMQyBQrXSd1LgDtL_RC3bFK3+dJ9x_ie8J5r5oVaEpo2TOer27l85'+FCp056Ah3NNn
+  RABBITMQ_PRIVATE_KEY: 706c2ccc-6b4b-4219-8604-49873bc6c288
+  RABBITMQ_PUBLIC_KEY: 115068d6-fcc1-4f01-a6bb-7d5194de646e
+  REVERSE_PROXY_URL: cytomine-nginx
+  SERVER_ID: 69308206-ed7c-454b-90b3-5639377ccd2f
+  SUPER_ADMIN_PRIVATE_KEY: 1d27e61f-a86c-4239-ad28-9398c79e1225
+  SUPER_ADMIN_PUBLIC_KEY: 653e466e-435f-4ff5-a501-90adeeff8c5c
+  IMAGE_SERVER_PRIVATE_KEY: 1eed2bf0-a141-4011-a77d-aa09285a2fc6
+  IMAGE_SERVER_PUBLIC_KEY: 70455df4-73e0-4634-830b-d09e1d34dc75
+  INSTANCE_HOST_WEBSITE_URL: http://cytomine.local
+  JAVAMELODY_PASS: iAWYk+Nc48XZToZ/z91R1hzhtoTgqJgxnq8mDa+I6Uo=
+  JAVAMELODY_PATH: /javamelody-core
+  JAVAMELODY_USER: admin
+  MONGO_DB_NAME: cytomine
+  MONGO_HOST: cytomine-mongodb
+  MONGO_PASS: password123
+  MONGO_PORT: "27017"
+  MONGO_USER: mongoadmin
+  POSTGIS_DB_NAME: postgres
+  POSTGIS_HOST: cytomine-postgis
+  POSTGIS_PASS: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
+  POSTGIS_PORT: "5432"
+  POSTGIS_USER: postgres
+  SMTP_HOST: mail.smtp
+  SMTP_PASS: password
+  SMTP_PORT: "587"
+  SMTP_USER: user
+  STORAGE_PATH: /data/images
+  URL_CORE: http://cytomine.local
+  URL_PIMS1: http://pims.cytomine.local
+  URL_PIMS2: http://pims.cytomine.local
 {{ end }}

@@ -38,11 +38,20 @@ spec:
         - name: {{ .Chart.Name }}-nginx
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
-          command: ["/usr/local/nginx/sbin/nginx"]
+          # command: [ "sh", "-c"]
+          # args:
+          # - while true; do
+          #     echo -en '\n';
+          #     printenv $INTERNAL_URLS_WEB_UI $INTERNAL_URLS_CORE $INTERNAL_URLS_IMS $URLS_CORE;
+          #     sleep 10;
+          #   done;
+          envFrom:
+            - configMapRef:
+                name: {{ include "cytomine.name" . }}-nginx-global-config
           volumeMounts:
             - name: {{ include "cytomine.name" . }}-nginx-config
-              mountPath: /usr/local/nginx/conf/nginx.conf
-              subPath: nginx.conf
+              mountPath: /cm_configs/etc/nginx/nginx.conf.sample
+              subPath: nginx.conf.sample
             - name: image-temp
               mountPath: "/tmp/uploaded"
           securityContext:
