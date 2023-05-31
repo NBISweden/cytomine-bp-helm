@@ -38,13 +38,6 @@ spec:
         - name: {{ .Chart.Name }}-nginx
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
           imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
-          # command: [ "sh", "-c"]
-          # args:
-          # - while true; do
-          #     echo -en '\n';
-          #     printenv $INTERNAL_URLS_WEB_UI $INTERNAL_URLS_CORE $INTERNAL_URLS_IMS $URLS_CORE;
-          #     sleep 10;
-          #   done;
           envFrom:
             - configMapRef:
                 name: {{ include "cytomine.name" . }}-nginx-global-config
@@ -54,9 +47,6 @@ spec:
               subPath: nginx.conf.sample
             - name: image-temp
               mountPath: "/tmp/uploaded"
-          securityContext:
-            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
-            privileged: {{ .Values.containerSecurity.privileged }}
           ports:
             - name: http
               containerPort: {{ .Values.nginx.port }}
