@@ -42,7 +42,8 @@ ingress:
 rabbitmq:
   deploy: true
   port: 5672
-  managementPort: 15672
+  managementPort: 15692
+  empdPort: 4369
   image:
     pullPolicy: Always
     repository: rabbitmq
@@ -152,10 +153,10 @@ pims:
     tag: 0.13.6
   resources:
     requests:
-      memory: "2Gi"
+      memory: "4G"
       cpu: "100m"
     limits:
-      memory: "2Gi"
+      memory: "4G"
       cpu: "200m"
 
 nginx:
