@@ -185,17 +185,17 @@ data:
   MONGO_PASS: password123
   MONGO_PORT: "27017"
   MONGO_USER: mongoadmin
-  POSTGIS_DB_NAME: postgres
+  POSTGIS_DB_NAME: docker
   POSTGIS_HOST: cytomine-postgis
   POSTGIS_PASS: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
   POSTGIS_PORT: "5432"
-  POSTGIS_USER: postgres
+  POSTGIS_USER: docker
   SMTP_HOST: mail.smtp
   SMTP_PASS: password
   SMTP_PORT: "587"
   SMTP_USER: user
   STORAGE_PATH: /data/images
   URL_CORE: http://cytomine.local
-  URL_PIMS1: http://pims.cytomine.local
-  URL_PIMS2: http://pims.cytomine.local
+  URL_PIMS1: http://ims.cytomine.local
+  URL_PIMS2: http://ims.cytomine.local
 {{ end }}

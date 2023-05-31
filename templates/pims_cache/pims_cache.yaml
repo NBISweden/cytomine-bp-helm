@@ -28,7 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}-web-ui
+        - name: {{ .Chart.Name }}-pims-cache
           image: "{{ .Values.pims_cache.image.repository }}:{{ .Values.pims_cache.image.tag }}"
           imagePullPolicy: {{ .Values.pims_cache.image.pullPolicy }}
           ports:

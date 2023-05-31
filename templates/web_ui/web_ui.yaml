@@ -43,12 +43,14 @@ spec:
             value: {{ .Values.web_ui.url_core }}
           - name: URL_UPLOAD
             value: {{ .Values.web_ui.url_upload }}
+          - name: CYTOMINE_COMMERCIAL_VERSION
+            value: {{ .Values.web_ui.commercial_version }}
           volumeMounts:
             - name: {{ include "cytomine.name" . }}-web-ui-localtime
               mountPath: /etc/localtime
             - name: {{ include "cytomine.name" . }}-web-ui-config
-              mountPath: /cmconfigs/app/configuration.json.sample
-              subPath: configuration.json
+              mountPath: /cm_configs/app/configuration.json.sample
+              subPath: configuration.json.sample
           ports:
             - name: http
               containerPort: {{ .Values.web_ui.port }}

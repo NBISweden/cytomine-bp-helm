@@ -14,8 +14,8 @@ kind: ConfigMap
 metadata:
   name: {{ include "cytomine.name" . }}-nginx-global-config
 data:
-    INTERNAL_URLS_CORE: {{ include "cytomine.name" . }}-core
-    INTERNAL_URLS_IMS: {{ include "cytomine.name" . }}-pims
+    INTERNAL_URLS_CORE: {{ include "cytomine.name" . }}-core:8080
+    INTERNAL_URLS_IMS: {{ include "cytomine.name" . }}-pims:5000
     INTERNAL_URLS_WEB_UI: {{ include "cytomine.name" . }}-web-ui
     UPLOAD_PATH: /tmp/uploaded
     URLS_CORE: cytomine.local
