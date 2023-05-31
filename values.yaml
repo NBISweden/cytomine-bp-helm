@@ -62,8 +62,8 @@ postgresql:
     pullPolicy: Always
     repository: cytomine/postgis
     tag: 15-3.3-alpine-1.2.1
-  user: postgres
-  database: postgres
+  user: docker
+  database: docker
   resources:
     requests:
       memory: "256Mi"
@@ -133,15 +133,15 @@ core:
       memory: "2Gi"
       cpu: "500m"
   # These variables default to a uuid (v4) if not set
-  adminPassword: null
-  adminPrivKey: null
-  adminPubKey: null
-  superAdminPrivKey: null
-  superAdminPubKey: null
-  imsPrivKey: null
-  imsPubKey: null
-  rabbitmqPrivKey: null
-  rabbitmqPubKey: null
+  # adminPassword: null
+  # adminPrivKey: null
+  # adminPubKey: null
+  # superAdminPrivKey: null
+  # superAdminPubKey: null
+  # imsPrivKey: null
+  # imsPubKey: null
+  # rabbitmqPrivKey: null
+  # rabbitmqPubKey: null
 
 pims:
   deploy: true
@@ -180,7 +180,7 @@ web_ui:
   image:
     pullPolicy: Always
     repository: cytomine/web_ui
-    tag: v2.5.0-beta.2
+    tag: 2.6.1
   resources:
     requests:
       memory: "256Mi"
@@ -190,6 +190,7 @@ web_ui:
       cpu: "200m"
   url_core: http://cytomine.local
   url_upload: http://upload.cytomine.local
+  commercial_version: CE2023.1
 
 #
 # Kuberenetes things

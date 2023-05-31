@@ -34,8 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
           volumeMounts:
             - name: postgres-storage
-              mountPath: "/var/lib/postgresql"
-          # command: ["/bin/bash"]
+              mountPath: "/var/lib/postgresql/data"
           env:
           - name: POSTGRES_USER
             value: {{ .Values.postgresql.user }}
@@ -52,8 +51,6 @@ spec:
             - name: postgres
               containerPort: 5432
               protocol: TCP
-          # securityContext:
-          #    runAsUser: 101
           livenessProbe:
             exec:
               command:
