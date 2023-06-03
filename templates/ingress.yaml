@@ -4,12 +4,29 @@ metadata:
   name: {{ include "cytomine.name" . }}-ingress
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 2000m
-  {{- with .Values.ingress.annotations }}
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   rules:
     - host: {{ .Values.global.domainName }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "cytomine.name" . }}-nginx
+                port:
+                  number: {{ .Values.nginx.port }}
+    - host: upload.cytomine.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "cytomine.name" . }}-nginx
+                port:
+                  number: {{ .Values.nginx.port }}
+    - host: ims.cytomine.local
       http:
         paths:
           - path: /

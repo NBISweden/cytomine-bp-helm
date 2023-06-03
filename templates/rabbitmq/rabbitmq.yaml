@@ -27,13 +27,6 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        - name: rabbitmq-secret
-          secret:
-            defaultMode: 0755
-            secretName: {{ include "cytomine.name" . }}-rabbitmq-secret
-        - name: rabbitmq-log
-          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-rabbitmq
           image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
@@ -44,8 +37,8 @@ spec:
               protocol: TCP
             - name: management
               containerPort: {{ .Values.rabbitmq.managementPort }}
-          # securityContext:
-          #   runAsUser: 102
+            - name: empd
+              containerPort: {{ .Values.rabbitmq.empdPort }}
           resources:
             {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           livenessProbe:
