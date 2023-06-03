@@ -56,14 +56,6 @@ spec:
               containerPort: {{ .Values.web_ui.port }}
           resources:
             {{- toYaml .Values.web_ui.resources | nindent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
