@@ -7,15 +7,20 @@ production systems in its current state.
 
 
 - [Cytomine Helm Chart](#cytomine-helm-chart)
+  - [Development environment](#development-environment)
     - [Setting up the environment and starting the minikube cluster on OS X](#setting-up-the-environment-and-starting-the-minikube-cluster-on-os-x)
     - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
     - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
-  - [Short kubernetes intro](#short-kubernetes-intro)
+  - [Short Introduction to Kubernetes and Helm](#short-introduction-to-kubernetes-and-helm)
+    - [Kubernetes](#kubernetes)
     - [Helm](#helm)
-    - [Installing helm](#installing-helm)
-  - [Development environment](#development-environment)
-    - [High priority](#high-priority)
+      - [Installing helm](#installing-helm)
 
+## Development environment
+
+This development environment has been tested in minikube. Instructions for
+installing minikube can be found in the
+[official instructions](https://minikube.sigs.k8s.io/docs/start/).
 
 ### Setting up the environment and starting the minikube cluster on OS X
 
@@ -79,7 +84,8 @@ Username to login is `admin` and the password can be retrived by running the com
 kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
 ```
 
-## Short kubernetes intro
+## Short Introduction to Kubernetes and Helm
+### Kubernetes
 
 Kuberenetes is a system to keep systems running modularly in "pods". A pod is
 basically one-or-more docker containers running together. Kubernetes can do all
@@ -135,29 +141,11 @@ from pods that aren't running.
 which allows us to use templates which will be automatically filled with values.
 This makes management much more convenient.
 
-### Installing helm
+#### Installing helm
 
 Helm is a package manager for kubernetes. It allows us to configure, install and
 uninstall the entire system much easier than using kubernetes to deploy all the
 individual parts. Instructions for installing helm can be found
 [here](https://helm.sh/docs/intro/install).
 
-## Development environment
 
-This development environment has been tested in minikube. Instructions for
-installing minikube can be found in the
-[official instructions](https://minikube.sigs.k8s.io/docs/start/).
-
-Parts of the internal message authentication in cytomine requires that the web
-client runs on a url that's reachable from other containers, making it difficult
-to run on localhost. Because of this you will also need to follow the
-instructions for using the
-[ingress dns](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns)
-add-on.
-
-### High priority
-
-- There are very few security considerations in the system.
-  - communication between services should be encrypted
-  - sensitive data should be stored in secrets
-  - usernames and passwords should be generated in a secure way
