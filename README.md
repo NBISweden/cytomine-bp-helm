@@ -5,19 +5,79 @@ These helm charts will setup a basic cytomine system on a kubernetes host.
 This repository is under active development, and should not be used for
 production systems in its current state.
 
-## Current Limitations
+
+- [Cytomine Helm Chart](#cytomine-helm-chart)
+    - [Setting up the environment and starting the minikube cluster on OS X](#setting-up-the-environment-and-starting-the-minikube-cluster-on-os-x)
+    - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
+    - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
+  - [Short kubernetes intro](#short-kubernetes-intro)
+    - [Helm](#helm)
+    - [Installing helm](#installing-helm)
+  - [Development environment](#development-environment)
+    - [High priority](#high-priority)
 
 
-### High priority
+### Setting up the environment and starting the minikube cluster on OS X
 
-- There are very few security considerations in the system.
-  - communication between services should be encrypted
-  - sensitive data should be stored in secrets
-  - usernames and passwords should be generated in a secure way
+Minikube doesn't seem to be superhappy on OS X, but with a few precautions it
+works!
 
-### Low priority
+-  If you wish to use the `ingress-dns` addon (which is used in this project),
+   you need to use the `hyperkit` driver (start minikube with:
+   `minikube start --driver=hyperkit`). I tried using the docker driver but
+   couldn't get it to work on my machine.
 
-- The nginx container could possibly be replaced by ingress rules.
+-  Connecting the cisco VPN client seems to mess with minikubes networking. I
+   need to restart minikube every time I need to use the VPN.
+
+-  Docker desktop also seems to conflict with minikube, so I can't run both
+   docker and minikube at the same time (unless I use the docker driver, but
+   then ingress-dns doesn't work).
+
+Exactly what settings to use depends on what machine you are running on, but I
+use this for my development:
+
+```
+minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
+```
+
+### Setting up the environment and starting the minikube cluster on Ubuntu
+
+1. Start the minikube
+
+```
+minikube start
+```
+2. Enable the addons
+```
+minikube addons enable ingress
+minikube addons enable ingress-dns
+```
+3. Add the `minikube-ip` as a DNS server
+```
+echo -e $"\nsearch local\nnameserver $(minikube ip)\ntimeout 5" \
+| sudo tee -a /etc/resolv.conf
+```
+When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
+
+4. Add minikibe 'cytomine domain name ' to host file
+```
+echo -e  $"\n$(minikube ip) cytomine.local\n$(minikube ip) ims.cytomine.local\n$(minikube ip) upload.cytomine.local" \
+| sudo tee -a /etc/nano.conf
+```
+### Installing the cytomine helm chart
+
+Once all the parts are in place, getting the system running is quite easy!
+
+Run `helm install cytomine .` to install the system with the `cytomine` prefix.
+
+You can use the `kubectl get pods` command to see the kubernetes pods come online.
+It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
+
+Username to login is `admin` and the password can be retrived by running the command:
+```
+kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
+```
 
 ## Short kubernetes intro
 
@@ -95,59 +155,9 @@ instructions for using the
 [ingress dns](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns)
 add-on.
 
-### Setting up the environment and starting the minikube cluster on OS X
+### High priority
 
-Minikube doesn't seem to be superhappy on OS X, but with a few precautions it
-works!
-
--  If you wish to use the `ingress-dns` addon (which is used in this project),
-   you need to use the `hyperkit` driver (start minikube with:
-   `minikube start --driver=hyperkit`). I tried using the docker driver but
-   couldn't get it to work on my machine.
-
--  Connecting the cisco VPN client seems to mess with minikubes networking. I
-   need to restart minikube every time I need to use the VPN.
-
--  Docker desktop also seems to conflict with minikube, so I can't run both
-   docker and minikube at the same time (unless I use the docker driver, but
-   then ingress-dns doesn't work).
-
-Exactly what settings to use depends on what machine you are running on, but I
-use this for my development:
-
-```
-minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
-```
-
-### Setting up the environment and starting the minikube cluster on Ubuntu
-
-1. Start the minikube
-
-```
-minikube start
-```
-2. Enable the addons
-```
-minikube addons enable ingress
-minikube addons enable ingress-dns
-```
-3. Add the `minikube-ip` as a DNS server
-```
-echo -e $"\nsearch test\nnameserver $(minikube ip)\ntimeout 5" \
-| sudo tee -a /etc/resolv.conf
-```
-When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
-
-### Installing the cytomine helm chart
-
-Once all the parts are in place, getting the system running is quite easy!
-
-Run `helm install cytomine .` to install the system with the `cytomine` prefix.
-
-You can use the `kubectl get pods` command to see the kubernetes pods come online.
-It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
-
-Username to login is `admin` and the password can be retrived by running the command:
-```
-kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
-```
+- There are very few security considerations in the system.
+  - communication between services should be encrypted
+  - sensitive data should be stored in secrets
+  - usernames and passwords should be generated in a secure way
