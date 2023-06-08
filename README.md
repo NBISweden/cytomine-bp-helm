@@ -68,7 +68,7 @@ When you are done testing cytomine, you can cleanup `resolv.conf` or wait till t
 4. Add minikibe 'cytomine domain name ' to host file
 ```
 echo -e  $"\n$(minikube ip) cytomine.local\n$(minikube ip) ims.cytomine.local\n$(minikube ip) upload.cytomine.local" \
-| sudo tee -a /etc/nano.conf
+| sudo tee -a /etc/hosts
 ```
 ### Installing the cytomine helm chart
 
