@@ -36,8 +36,8 @@ spec:
           path: /etc/localtime
       containers:
         - name: {{ .Chart.Name }}-core
-          image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
-          imagePullPolicy: {{ .Values.core.image.pullPolicy }}
+          image: "{{ .Values.images.core }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: cytomine-core-env

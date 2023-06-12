@@ -29,8 +29,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-rabbitmq
-          image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
-          imagePullPolicy: {{ .Values.rabbitmq.image.pullPolicy }}
+          image: "{{ .Values.images.rabbitmq }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           ports:
             - name: amqp
               containerPort: {{ .Values.rabbitmq.port }}

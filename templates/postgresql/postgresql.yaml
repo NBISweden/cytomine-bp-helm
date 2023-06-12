@@ -30,8 +30,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-postgis
-          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          image: "{{ .Values.images.postgresql }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           volumeMounts:
             - name: postgres-storage
               mountPath: "/var/lib/postgresql/data"

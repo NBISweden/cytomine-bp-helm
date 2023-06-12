@@ -39,8 +39,8 @@ spec:
             name: {{ template "cytomine.name" . }}-pims-logging
       containers:
         - name: {{ .Chart.Name }}-pims
-          image: "{{ .Values.pims.image.repository }}:{{ .Values.pims.image.tag }}"
-          imagePullPolicy: {{ .Values.pims.image.pullPolicy }}
+          image: "{{ .Values.images.pims }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: cytomine-pims-config
