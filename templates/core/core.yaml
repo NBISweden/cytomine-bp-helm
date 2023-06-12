@@ -41,6 +41,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: cytomine-core-env
+            - secretRef:
+                name: cytomine-core-secret
           # command: [ "sh", "-c"]
           # args:
           # - while true; do

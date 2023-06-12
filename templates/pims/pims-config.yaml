@@ -15,8 +15,6 @@ data:
     PENDING_PATH: /tmp/uploaded
     PIMS_URL: http://ims.cytomine.local
     ROOT: /data/images
-    CYTOMINE_PUBLIC_KEY: ca9020d0-76fe-4f05-8371-6cbe885c2b29
-    CYTOMINE_PRIVATE_KEY: db087410-c2bd-4fa9-8aca-a9ad98226657
 {{ end }}
 ---
 {{ if .Values.pims.deploy }}
@@ -27,4 +25,15 @@ metadata:
 data:
   logging.yml: |-
     {{ .Files.Get "configs/logging.yml" | nindent 4 }}
+{{ end }}
+---
+{{ if .Values.pims.deploy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cytomine.name" . }}-pims-secret
+type: Opaque
+stringData:
+  public_key: {{ .Values.pims.public_key }}
+  private_key: {{ .Values.pims.private_key }}
 {{ end }}

@@ -52,6 +52,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "cytomine.name" . }}-postgresql-secret
                   key: password
+            - name: CYTOMINE_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cytomine.name" . }}-pims-secret
+                  key: public_key
+            - name: CYTOMINE_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cytomine.name" . }}-pims-secret
+                  key: private_key
           volumeMounts:
             - name: images
               mountPath: "/data/images"
