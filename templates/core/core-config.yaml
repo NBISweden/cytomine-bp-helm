@@ -162,32 +162,20 @@ metadata:
   name: {{ include "cytomine.name" . }}-core-env
 data:
   ADMIN_EMAIL: info@cytomine.coop
-  ADMIN_PASSWORD: OA9M4A382GFDNAKLmu5a/I1L0yQsXe/pmmxMelm2jwQ=
-  ADMIN_PRIVATE_KEY: ba04b7c3-2188-45c4-ac2e-8a0bfd98afee
-  ADMIN_PUBLIC_KEY: 1bc0d049-fbfe-4c7d-a320-4e034a5feb90
   INSTANCE_HOST_PHONE_NUMBER: None
   INSTANCE_HOST_SUPPORT_MAIL: None
-  JWT_SECRET: OLSE'XpvGZckJEH;nYh4Gg9rv_HY'9RAKvy7aPzxFoVNCem8QZQsGyKdqZTrYq9U1wO+bEc;F8nnRE3J4tDUK85ts^1Uc8BOzY8Q2K.v_W'RL;8fedA;VVDIZri0OjKu__tcjdM+Pa3+^^C6hcNrtRF5N^gW~w0WoWn;iNfzyGuhwu4ETMOEjpCXVMStofMQyBQrXSd1LgDtL_RC3bFK3+dJ9x_ie8J5r5oVaEpo2TOer27l85'+FCp056Ah3NNn
-  RABBITMQ_PRIVATE_KEY: 706c2ccc-6b4b-4219-8604-49873bc6c288
-  RABBITMQ_PUBLIC_KEY: 115068d6-fcc1-4f01-a6bb-7d5194de646e
   REVERSE_PROXY_URL: cytomine-nginx
   SERVER_ID: 69308206-ed7c-454b-90b3-5639377ccd2f
-  SUPER_ADMIN_PRIVATE_KEY: 1d27e61f-a86c-4239-ad28-9398c79e1225
-  SUPER_ADMIN_PUBLIC_KEY: 653e466e-435f-4ff5-a501-90adeeff8c5c
-  IMAGE_SERVER_PRIVATE_KEY: db087410-c2bd-4fa9-8aca-a9ad98226657
-  IMAGE_SERVER_PUBLIC_KEY: ca9020d0-76fe-4f05-8371-6cbe885c2b29
   INSTANCE_HOST_WEBSITE_URL: http://cytomine.local
   JAVAMELODY_PASS: iAWYk+Nc48XZToZ/z91R1hzhtoTgqJgxnq8mDa+I6Uo=
   JAVAMELODY_PATH: /javamelody-core
   JAVAMELODY_USER: admin
   MONGO_DB_NAME: cytomine
   MONGO_HOST: cytomine-mongodb
-  MONGO_PASS: password123
   MONGO_PORT: "27017"
   MONGO_USER: mongoadmin
   POSTGIS_DB_NAME: docker
   POSTGIS_HOST: cytomine-postgis
-  POSTGIS_PASS: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
   POSTGIS_PORT: "5432"
   POSTGIS_USER: docker
   SMTP_HOST: mail.smtp
@@ -198,4 +186,27 @@ data:
   URL_CORE: http://cytomine.local
   URL_PIMS1: http://ims.cytomine.local
   URL_PIMS2: http://ims.cytomine.local
+{{ end }}
+---
+{{ if .Values.core.deploy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cytomine.name" . }}-core-secret
+type: Opaque
+stringData:
+  ADMIN_PASSWORD: {{ .Values.core.admin_password }}
+  ADMIN_PRIVATE_KEY: {{ .Values.core.admin_private_key }}
+  ADMIN_PUBLIC_KEY: {{ .Values.core.admin_public_key }}
+  JWT_SECRET: {{ .Values.core.jwt_secret }}
+  RABBITMQ_PRIVATE_KEY: {{ .Values.core.rabbitmq_private_key }}
+  RABBITMQ_PUBLIC_KEY: {{ .Values.core.rabbitmq_public_key }}
+  SUPER_ADMIN_PRIVATE_KEY: {{ .Values.core.super_admin_private_key }}
+  SUPER_ADMIN_PUBLIC_KEY: {{ .Values.core.super_admin_public_key }}
+  IMAGE_SERVER_PRIVATE_KEY: {{ .Values.core.image_server_private_key }}
+  IMAGE_SERVER_PUBLIC_KEY: {{ .Values.core.image_server_public_key }}
+  SMTP_PASSWORD: {{ .Values.core.smtp_password }}
+  JAVAMELODY_PASS: {{ .Values.core.javamelody_password }}
+  POSTGIS_PASS:  {{ .Values.core.postgis_password }}
+  MONGO_PASS: {{ .Values.mongodb.password }}
 {{ end }}
