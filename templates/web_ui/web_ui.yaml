@@ -36,8 +36,8 @@ spec:
           path: /etc/localtime
       containers:
         - name: {{ .Chart.Name }}-web-ui
-          image: "{{ .Values.web_ui.image.repository }}:{{ .Values.web_ui.image.tag }}"
-          imagePullPolicy: {{ .Values.web_ui.image.pullPolicy }}
+          image: "{{ .Values.images.web_ui }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           env:
           - name: URL_CORE
             value: {{ .Values.web_ui.url_core }}

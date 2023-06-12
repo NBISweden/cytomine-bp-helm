@@ -30,8 +30,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-mongodb
-          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
-          imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
+          image: "{{ .Values.images.mongodb }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           volumeMounts:
             - name: mongodb-storage
               mountPath: "/data/db"

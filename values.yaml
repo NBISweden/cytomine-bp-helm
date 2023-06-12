@@ -14,6 +14,7 @@ global:
 readOnceStorageClass: ""
 readManyStorageClass: ""
 
+# Resource settings
 singularityStorage: "10Gi"
 tempImageStorage: "1Gi"
 imageStorage: "3Gi"
@@ -34,20 +35,31 @@ smtpPort: 587
 ingress:
   annotations: {}
 
+#
+# Images
+#
+images:
+  rabbitmq: rabbitmq:3.10
+  postgresql: cytomine/postgis:15-3.3-alpine-1.2.1
+  mongodb: mongo:4.4.18-focal
+  pims_cache: redis:7.0.8
+  bioformat: cytomine/bioformat:v1.2.0
+  core: cytomine/core:4.3.6
+  pims: cytomine/pims:0.13.6
+  nginx: cytomine/nginx:1.22.1-1.2.0
+  web_ui: cytomine/web_ui:2.6.1
+  pullPolicy: Always
 
 #
 # Services - these are the services deployed by this chart
 #
 
+# RabbitMQ - Required to use algorithms
 rabbitmq:
   deploy: true
   port: 5672
   managementPort: 15692
   empdPort: 4369
-  image:
-    pullPolicy: Always
-    repository: rabbitmq
-    tag: "3.10"
   resources:
     requests:
       memory: "512Mi"
@@ -56,13 +68,10 @@ rabbitmq:
       memory: "512Mi"
       cpu: "400m"
 
+# Postgresql - Main database.Stores most of data
 postgresql:
   deploy: true
   port: 5432
-  image:
-    pullPolicy: Always
-    repository: cytomine/postgis
-    tag: 15-3.3-alpine-1.2.1
   user: docker
   database: docker
   resources:
@@ -73,14 +82,10 @@ postgresql:
       memory: "256Mi"
       cpu: "200m"
 
-mongodb:
+# MongoDB - Secondary database.Stores activity data
   deploy: true
   port: 27017
   statusPort: 28017
-  image:
-    pullPolicy: Always
-    repository: mongo
-    tag: 4.4.18-focal
   resources:
     requests:
       memory: "256Mi"
@@ -89,13 +94,10 @@ mongodb:
       memory: "256Mi"
       cpu: "200m"
 
+# Redis - Cache for fast image extractor
 pims_cache:
   deploy: true
   port: 6379
-  image:
-    pullPolicy: Always
-    repository: redis
-    tag: 7.0.8
   resources:
     requests:
       memory: "256Mi"
@@ -104,13 +106,10 @@ pims_cache:
       memory: "256Mi"
       cpu: "200m"
 
+# Bioformat - Support for additonal image formats
 bioformat:
   deploy: true
   port: 4321
-  image:
-    pullPolicy: Always
-    repository: cytomine/bioformat
-    tag: v1.2.0
   resources:
     requests:
       memory: "128Mi"
@@ -119,13 +118,10 @@ bioformat:
       memory: "128Mi"
       cpu: "200m"
 
+# Core - Main Cytomine Server
 core:
   deploy: true
   port: 8080
-  image:
-    pullPolicy: Always
-    repository: cytomine/core
-    tag: 4.3.6
   resources:
     requests:
       memory: "2Gi"
@@ -133,24 +129,11 @@ core:
     limits:
       memory: "2Gi"
       cpu: "500m"
-  # These variables default to a uuid (v4) if not set
-  # adminPassword: null
-  # adminPrivKey: null
-  # adminPubKey: null
-  # superAdminPrivKey: null
-  # superAdminPubKey: null
-  # imsPrivKey: null
-  # imsPubKey: null
-  # rabbitmqPrivKey: null
-  # rabbitmqPubKey: null
 
+# Pims - Main Image Server
 pims:
   deploy: true
   port: 5000
-  image:
-    pullPolicy: Always
-    repository: cytomine/pims
-    tag: 0.13.6
   resources:
     requests:
       memory: "4Gi"
@@ -159,14 +142,11 @@ pims:
       memory: "4Gi"
       cpu: "1000m"
 
+# Nginx - Main HTTP proxy dispatching incoming requests
 nginx:
   deploy: true
   port: 80
   serverID: null
-  image:
-    pullPolicy: Always
-    repository: cytomine/nginx
-    tag: 1.22.1-1.2.0
   resources:
     requests:
       memory: "256Mi"
@@ -175,13 +155,10 @@ nginx:
       memory: "256Mi"
       cpu: "200m"
 
+# Web-ui - Cytomine GUI interface
 web_ui:
   deploy: true
   port: 80
-  image:
-    pullPolicy: Always
-    repository: cytomine/web_ui
-    tag: 2.6.1
   resources:
     requests:
       memory: "256Mi"

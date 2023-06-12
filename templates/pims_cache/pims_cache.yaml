@@ -29,8 +29,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-pims-cache
-          image: "{{ .Values.pims_cache.image.repository }}:{{ .Values.pims_cache.image.tag }}"
-          imagePullPolicy: {{ .Values.pims_cache.image.pullPolicy }}
+          image: "{{ .Values.images.pims_cache }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.pims_cache.port }}

@@ -36,8 +36,8 @@ spec:
           claimName: {{ template "cytomine.name" . }}-temp-image-claim
       containers:
         - name: {{ .Chart.Name }}-nginx
-          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          image: "{{ .Values.images.nginx }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ include "cytomine.name" . }}-nginx-global-config
