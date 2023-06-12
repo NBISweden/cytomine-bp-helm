@@ -83,6 +83,7 @@ postgresql:
       cpu: "200m"
 
 # MongoDB - Secondary database.Stores activity data
+mongodb:
   deploy: true
   port: 27017
   statusPort: 28017
