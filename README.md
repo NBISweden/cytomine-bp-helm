@@ -77,7 +77,7 @@ Once all the parts are in place, getting the system running is quite easy!
 Run `helm install cytomine .` to install the system with the `cytomine` prefix.
 
 You can use the `kubectl get pods` command to see the kubernetes pods come online.
-It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
+It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
 
 Username to login is `admin` and the password can be retrived by running the command:
 ```
