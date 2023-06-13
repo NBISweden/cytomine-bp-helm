@@ -18,7 +18,7 @@ data:
     INTERNAL_URLS_IMS: {{ include "cytomine.name" . }}-pims:5000
     INTERNAL_URLS_WEB_UI: {{ include "cytomine.name" . }}-web-ui
     UPLOAD_PATH: /tmp/uploaded
-    URLS_CORE: cytomine.local
-    URLS_IMAGE_SERVER: ims.cytomine.local
-    URLS_UPLOAD: upload.cytomine.local
+    URLS_CORE: {{ .Values.global.domainName }}
+    URLS_IMAGE_SERVER: {{ .Values.global.imsDomainName }}
+    URLS_UPLOAD: {{ .Values.web_ui.url_upload }}
 {{ end }}

@@ -185,8 +185,8 @@ web_ui:
     limits:
       memory: "256Mi"
       cpu: "200m"
-  url_core: http://cytomine.local
-  url_upload: http://upload.cytomine.local
+  url_core: cytomine.local
+  url_upload: upload.cytomine.local
   commercial_version: CE2023.1
 
 #

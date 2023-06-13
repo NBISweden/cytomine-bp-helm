@@ -13,7 +13,7 @@ data:
     cache_enabled: "True"
     task_queue_enabled: "False"
     PENDING_PATH: /tmp/uploaded
-    PIMS_URL: http://ims.cytomine.local
+    PIMS_URL: http://{{ .Values.global.imsDomainName }}
     ROOT: /data/images
 {{ end }}
 ---
