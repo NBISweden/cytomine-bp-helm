@@ -87,7 +87,10 @@ kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PAS
 
 ### Testing
 
-Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer). Currently, in order to be uploaded, DICOM files of WSI need to be placed within a folder, which should then be enclosed within a .zip archive. The name of the folder will serve as the slide's name in the frontend.
+Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per
+Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer).
+Currently, in order to be uploaded, DICOM files of WSI need to be placed within a folder, which should then be enclosed within a .zip archive.
+The name of the folder will serve as the slide's name in the frontend.
 
 ## Short Introduction to Kubernetes and Helm
 ### Kubernetes
