@@ -9,11 +9,7 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
-<<<<<<< HEAD:Chart.yaml
 version: 1.0.0
-=======
-version: 0.4.0
->>>>>>> main:charts/cytomine/Chart.yaml
 
 # There are many parts of the cytomine system, so the cytomine-core version is
 # used as the app version.

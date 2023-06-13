@@ -167,7 +167,6 @@ data:
   REVERSE_PROXY_URL: cytomine-nginx
   SERVER_ID: 69308206-ed7c-454b-90b3-5639377ccd2f
   INSTANCE_HOST_WEBSITE_URL: http://cytomine.local
-  JAVAMELODY_PASS: iAWYk+Nc48XZToZ/z91R1hzhtoTgqJgxnq8mDa+I6Uo=
   JAVAMELODY_PATH: /javamelody-core
   JAVAMELODY_USER: admin
   MONGO_DB_NAME: cytomine
