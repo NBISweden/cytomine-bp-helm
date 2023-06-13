@@ -11,6 +11,7 @@ production systems in its current state.
     - [Setting up the environment and starting the minikube cluster on OS X](#setting-up-the-environment-and-starting-the-minikube-cluster-on-os-x)
     - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
     - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
+    - [Testing](#testing)
   - [Short Introduction to Kubernetes and Helm](#short-introduction-to-kubernetes-and-helm)
     - [Kubernetes](#kubernetes)
     - [Helm](#helm)
@@ -77,12 +78,16 @@ Once all the parts are in place, getting the system running is quite easy!
 Run `helm install cytomine .` to install the system with the `cytomine` prefix.
 
 You can use the `kubectl get pods` command to see the kubernetes pods come online.
-It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
+It takes 5~6 min to deploy all the pods.If everything works, you should now be able to reach the system in your browser at `cytomine.local`.
 
 Username to login is `admin` and the password can be retrived by running the command:
 ```
-kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
+kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}'
 ```
+
+### Testing
+
+Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer). Currently, in order to be uploaded, DICOM files of WSI need to be placed within a folder, which should then be enclosed within a .zip archive. The name of the folder will serve as the slide's name in the frontend.
 
 ## Short Introduction to Kubernetes and Helm
 ### Kubernetes
