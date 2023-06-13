@@ -1,0 +1,13 @@
+{{ if .Values.memcached.deploy }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cytomine.name" . }}-memcached
+spec:
+  selector:
+    app: {{ include "cytomine.name" . }}-memcached
+  ports:
+    - name: memcache
+      port: {{ .Values.memcached.port }}
+      protocol: TCP
+{{ end }}

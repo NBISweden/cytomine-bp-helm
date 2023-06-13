@@ -1,0 +1,56 @@
+{{ if .Values.k8s_software_router.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cytomine.name" . }}-k8s-software-router
+  labels:
+    role: software-router
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-k8s-software-router
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-k8s-software-router
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: software-router
+        app: {{ template "cytomine.name" . }}-k8s-software-router
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: k8s-software-router-secret
+          secret:
+            defaultMode: 0400
+            secretName: {{ include "cytomine.name" . }}-k8s-software-router-secret
+      containers:
+        - name: {{ .Chart.Name }}-k8s-software-router
+          image: "{{ .Values.k8s_software_router.image.repository }}:{{ .Values.k8s_software_router.image.tag }}"
+          imagePullPolicy: {{ .Values.k8s_software_router.image.pullPolicy }}
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - python3
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          volumeMounts:
+            - name: k8s-software-router-secret
+              mountPath: /app/settings.yaml
+              subPath: settings.yaml
+          resources:
+            {{- toYaml .Values.k8s_software_router.resources | nindent 12 }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{ end }}

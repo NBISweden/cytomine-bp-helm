@@ -1,0 +1,9 @@
+{{ if .Values.iip_off.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-iip-official-config
+data:
+  nginx.conf.sample: |-
+    {{ ( tpl (.Files.Get "configs/iip_off.conf.sample") . ) | nindent 4 }}
+{{ end }}
