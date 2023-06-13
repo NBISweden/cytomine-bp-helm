@@ -51,9 +51,6 @@ spec:
             - name: postgres
               containerPort: 5432
               protocol: TCP
-          securityContext:
-            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
-            privileged: {{ .Values.containerSecurity.privileged }}
           livenessProbe:
             exec:
               command:
