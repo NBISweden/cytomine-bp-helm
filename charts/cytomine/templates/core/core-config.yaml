@@ -164,27 +164,26 @@ data:
   ADMIN_EMAIL: info@cytomine.coop
   INSTANCE_HOST_PHONE_NUMBER: None
   INSTANCE_HOST_SUPPORT_MAIL: None
-  REVERSE_PROXY_URL: cytomine-nginx
+  REVERSE_PROXY_URL: {{ include "cytomine.name" . }}-nginx
   SERVER_ID: 69308206-ed7c-454b-90b3-5639377ccd2f
-  INSTANCE_HOST_WEBSITE_URL: http://cytomine.local
+  INSTANCE_HOST_WEBSITE_URL: http://{{ .Values.global.domainName}}
   JAVAMELODY_PATH: /javamelody-core
   JAVAMELODY_USER: admin
-  MONGO_DB_NAME: cytomine
-  MONGO_HOST: cytomine-mongodb
-  MONGO_PORT: "27017"
+  MONGO_DB_NAME: {{ include "cytomine.name" . }}
+  MONGO_HOST: {{ include "cytomine.name" . }}-mongodb
+  MONGO_PORT: "{{ .Values.mongodb.port }}"
   MONGO_USER: mongoadmin
-  POSTGIS_DB_NAME: docker
-  POSTGIS_HOST: cytomine-postgis
-  POSTGIS_PORT: "5432"
-  POSTGIS_USER: docker
-  SMTP_HOST: mail.smtp
-  SMTP_PASS: password
-  SMTP_PORT: "587"
+  POSTGIS_DB_NAME: {{ .Values.postgresql.user }}
+  POSTGIS_HOST: {{ include "cytomine.name" . }}-postgis
+  POSTGIS_PORT: "{{ .Values.postgresql.port }}"
+  POSTGIS_USER: {{ .Values.postgresql.user }}
+  SMTP_HOST: {{ .Values.smtpHost }}
+  SMTP_PORT: "{{ .Values.smtpPort }}"
   SMTP_USER: user
   STORAGE_PATH: /data/images
-  URL_CORE: http://cytomine.local
-  URL_PIMS1: http://ims.cytomine.local
-  URL_PIMS2: http://ims.cytomine.local
+  URL_CORE: http://{{ .Values.global.domainName}}
+  URL_PIMS1: http://{{ .Values.global.imsDomainName}}
+  URL_PIMS2: http://{{ .Values.global.imsDomainName}}
 {{ end }}
 ---
 {{ if .Values.core.deploy }}

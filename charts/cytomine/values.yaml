@@ -8,7 +8,7 @@
 
 global:
   domainName: "cytomine.local"
-  imsdomainName: "ims.cytomine.local"
+  imsDomainName: "ims.cytomine.local"
   use_tls: false
   affinity: {}
   tolerations: {}
@@ -27,7 +27,7 @@ adminEmail: info@cytomine.coop
 emailSender: your.email@gmail.com
 emailReceiver: receiver@XXX.com
 smtpPass: null
-smtpHost: smtp.gmail.com
+smtpHost: mail.smtp
 smtpPort: 587
 
 #

@@ -71,7 +71,7 @@ spec:
             httpGet:
               path: /server/ping
               port: 8080
-            initialDelaySeconds: 450
+            initialDelaySeconds: 100
             failureThreshold: 4
             timeoutSeconds: 5
       {{- with .Values.global.tolerations }}
