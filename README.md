@@ -82,7 +82,7 @@ It takes 5~6 min to deploy all the pods.If everything works, you should now be a
 
 Username to login is `admin` and the password can be retrived by running the command:
 ```
-kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}'
+kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d
 ```
 
 ### Testing
