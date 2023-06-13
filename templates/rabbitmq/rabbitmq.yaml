@@ -39,6 +39,9 @@ spec:
               containerPort: {{ .Values.rabbitmq.managementPort }}
             - name: empd
               containerPort: {{ .Values.rabbitmq.empdPort }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           resources:
             {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           livenessProbe:

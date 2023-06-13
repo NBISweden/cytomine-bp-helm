@@ -43,13 +43,6 @@ spec:
                 name: cytomine-core-env
             - secretRef:
                 name: cytomine-core-secret
-          # command: [ "sh", "-c"]
-          # args:
-          # - while true; do
-          #     echo -en '\n';
-          #     printenv JAVAMELODY_PATH STORAGE_PATH;
-          #     sleep 10;
-          #   done;
           volumeMounts:
             - name: core-config
               mountPath:  /cm_configs/app/application.yml.sample
@@ -59,13 +52,14 @@ spec:
               subPath: logback.xml
             - name: {{ include "cytomine.name" . }}-core-localtime
               mountPath: /etc/localtime
-            # - name: singularity-images
-            #   mountPath: "/data/softwares/images"
           ports:
             - name: http
               containerPort: {{ .Values.core.port }}
           resources:
             {{- toYaml .Values.core.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           livenessProbe:
             httpGet:
               path: /server/ping

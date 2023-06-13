@@ -73,6 +73,9 @@ spec:
           ports:
             - name: http
               containerPort: 5000
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           resources:
             {{- toYaml .Values.pims.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

@@ -50,6 +50,9 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.nginx.port }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
