@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cytomine-pims
+spec:
+  podSelector:
+    matchLabels:
+      app: cytomine-pims
+  policyTypes:
+    - Egress
+    - Ingress
+  egress:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cytomine-nginx
+      ports:
+        - protocol: TCP
+          port: 5000
+    # - from:
+    #     - podSelector:
+    #         matchLabels:
+    #           app: pims-cache
+    #   ports:
+    #     - protocol: TCP
+    #       port: 6379
+    # - from:
+    #     - podSelector:
+    #         matchLabels:
+    #           app: cytomine-rabbitmq
+    #   ports:
+    #     - protocol: TCP
+    #       port: 5672
+    #     - protocol: TCP
+    #       port: 15692
+    #     - protocol: TCP
+    #       port: 4369

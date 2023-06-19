@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cytomine-rabbitmq
+spec:
+  podSelector:
+    matchLabels:
+      app: cytomine-rabbitmq
+  policyTypes:
+    - Egress
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cytomine-core
+      ports:
+        - protocol: TCP
+          port: 27017
+        - protocol: TCP
+          port: 28017
+  egress:
+

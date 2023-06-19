@@ -12,8 +12,10 @@ global:
   use_tls: false
   affinity: {}
   tolerations: {}
+  publicIP: "192.168.49.2/32"
 readOnceStorageClass: ""
 readManyStorageClass: ""
+
 
 # Resource settings
 singularityStorage: "10Gi"

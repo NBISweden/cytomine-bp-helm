@@ -47,12 +47,12 @@ spec:
     - to:
         - podSelector:
             matchLabels:
-              app: cytomine-postgis
+              app: cytomine-mongodb
       ports:
         - protocol: TCP
-          port: 5432
+          port: 27017
         - protocol: TCP
-          port: 80
+          port: 28017
     - to:
         - namespaceSelector:
             matchLabels:
