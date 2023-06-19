@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cytomine-web-ui
+spec:
+  podSelector:
+    matchLabels:
+      app: cytomine-web-ui
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cytomine-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+
+
