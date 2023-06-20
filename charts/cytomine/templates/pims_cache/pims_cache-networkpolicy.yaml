@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pims-cache
+spec:
+  podSelector:
+    matchLabels:
+      app: pims-cache
+  policyTypes:
+    - Egress
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cytomine-pims
+      ports:
+        - protocol: TCP
+          port: 6379
+  egress:

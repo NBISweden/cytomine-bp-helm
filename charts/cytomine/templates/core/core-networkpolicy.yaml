@@ -45,6 +45,19 @@ spec:
     - to:
         - namespaceSelector:
             matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+        - podSelector:
+            matchLabels:
+              app: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+
+    - to:
+        - namespaceSelector:
+            matchLabels:
                kubernetes.io/metadata.name: kube-system
           podSelector:
             matchLabels:
