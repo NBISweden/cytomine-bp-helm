@@ -1,22 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: cytomine-pims
+  name: {{ include "cytomine.name" . }}-pims
 spec:
   podSelector:
     matchLabels:
-      app: cytomine-pims
+      app: {{ include "cytomine.name" . }}-pims
   policyTypes:
     - Egress
     - Ingress
   egress:
+  # Pims-cache
     - to:
         - podSelector:
             matchLabels:
-              app: pims-cache
+              app: {{ include "cytomine.name" . }}-pims-cache
       ports:
-        - protocol: TCP
-          port: 6379
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.pims_cache.port }}
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.pims.port }}
+  #Ingress-nginx
     - to:
         - namespaceSelector:
             matchLabels:
@@ -25,18 +29,20 @@ spec:
             matchLabels:
               app: ingress-nginx
       ports:
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 443
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 80
+  #Minikube IP
     - to:
         - ipBlock:
-            cidr: 192.168.49.2/32
+            cidr: {{ .Values.global.publicIP }}
       ports:
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 443
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 80
+  #Kube-system
     - to:
         - namespaceSelector:
             matchLabels:
@@ -48,11 +54,12 @@ spec:
         - port: 53
           protocol: UDP
   ingress:
+  #Nginx
     - from:
         - podSelector:
             matchLabels:
-              app: cytomine-nginx
+              app: {{ include "cytomine.name" . }}-nginx
       ports:
-        - protocol: TCP
-          port: 5000
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.pims.port }}
 

@@ -13,6 +13,7 @@ global:
   affinity: {}
   tolerations: {}
   publicIP: "192.168.49.2/32"
+  protocol: TCP
 readOnceStorageClass: ""
 readManyStorageClass: ""
 

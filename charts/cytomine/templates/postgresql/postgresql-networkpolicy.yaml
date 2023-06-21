@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: cytomine-postgis
+  name: {{ include "cytomine.name" . }}-postgis
 spec:
   podSelector:
     matchLabels:
-      app: cytomine-postgis
+      app: {{ include "cytomine.name" . }}-postgis
   policyTypes:
     - Egress
     - Ingress
@@ -13,9 +13,9 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: cytomine-core
+              app: {{ include "cytomine.name" . }}-core
       ports:
-        - protocol: TCP
-          port: 5432
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.postgresql.port }}
   egress:
 

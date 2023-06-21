@@ -1,15 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: cytomine-nginx
+  name: {{ include "cytomine.name" . }}-nginx
 spec:
   podSelector:
     matchLabels:
-      app: cytomine-nginx
+      app: {{ include "cytomine.name" . }}-nginx
   policyTypes:
     - Egress
     - Ingress
   ingress:
+  #Ingress-Nginx
     - from:
         - namespaceSelector:
             matchLabels:
@@ -18,41 +19,46 @@ spec:
             matchLabels:
               app.kubernetes.io/name: ingress-nginx
       ports:
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 80
-        - protocol: TCP
+        - protocol: {{ .Values.global.protocol }}
           port: 443
   egress:
+  #Web-ui
     - to:
         - podSelector:
             matchLabels:
-              app: cytomine-web-ui
+              app: {{ include "cytomine.name" . }}-web-ui
       ports:
-        - protocol: TCP
-          port: 80
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.web_ui.port }}
+  #Core
     - to:
         - podSelector:
             matchLabels:
-              app: cytomine-core
+              app: {{ include "cytomine.name" . }}-core
       ports:
-        - protocol: TCP
-          port: 8080
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.core.port }}
+  #Pims
     - to:
         - podSelector:
             matchLabels:
-              app: cytomine-pims
+              app: {{ include "cytomine.name" . }}-pims
       ports:
-        - protocol: TCP
-          port: 5000
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.pims.port }}
+  #MongoDB
     - to:
         - podSelector:
             matchLabels:
-              app: cytomine-mongodb
+              app: {{ include "cytomine.name" . }}-mongodb
       ports:
-        - protocol: TCP
-          port: 27017
-        - protocol: TCP
-          port: 28017
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.mongodb.port }}
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.mongodb.statusPort }}
+  #Kube-system
     - to:
         - namespaceSelector:
             matchLabels:

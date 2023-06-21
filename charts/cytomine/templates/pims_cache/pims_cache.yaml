@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pims-cache
+  name: {{ include "cytomine.name" . }}-pims-cache
   labels:
-    role: pims-cache
+    role: {{ include "cytomine.name" . }}-pims-cache
     app: {{ include "cytomine.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: {{ .Release.Name }}-pims-cache
@@ -13,13 +13,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pims-cache
+      app: {{ include "cytomine.name" . }}-pims-cache
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         role: pims-cache
-        app: pims-cache
+        app: {{ include "cytomine.name" . }}-pims-cache
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
