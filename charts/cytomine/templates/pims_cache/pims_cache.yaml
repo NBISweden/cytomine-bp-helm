@@ -13,13 +13,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "cytomine.name" . }}-pims-cache
+      app: {{ template "cytomine.name" . }}-pims-cache
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         role: pims-cache
-        app: {{ include "cytomine.name" . }}-pims-cache
+        app: {{ template "cytomine.name" . }}-pims-cache
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}

@@ -9,6 +9,7 @@
 global:
   domainName: "cytomine.local"
   imsDomainName: "ims.cytomine.local"
+  urlUpload: "upload.cytomine.local"
   use_tls: false
   affinity: {}
   tolerations: {}
@@ -63,7 +64,6 @@ rabbitmq:
   deploy: true
   port: 5672
   managementPort: 15692
-  empdPort: 4369
   resources:
     requests:
       memory: "512Mi"
@@ -92,7 +92,9 @@ mongodb:
   deploy: true
   port: 27017
   statusPort: 28017
+  username: mongoadmin
   password: password123
+  database: cytomine
   resources:
     requests:
       memory: "256Mi"
@@ -141,6 +143,7 @@ core:
   image_server_public_key: ca9020d0-76fe-4f05-8371-6cbe885c2b29
   javamelody_password: iAWYk+Nc48XZToZ/z91R1hzhtoTgqJgxnq8mDa+I6Uo=
   smtp_password: password
+  server_id: 69308206-ed7c-454b-90b3-5639377ccd2f
   postgis_password: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
   resources:
     requests:
@@ -156,6 +159,7 @@ pims:
   port: 5000
   public_key: ca9020d0-76fe-4f05-8371-6cbe885c2b29
   private_key: db087410-c2bd-4fa9-8aca-a9ad98226657
+  pims_url: http://ims.cytomine.local
   resources:
     requests:
       memory: "4Gi"
@@ -188,8 +192,8 @@ web_ui:
     limits:
       memory: "256Mi"
       cpu: "200m"
-  url_core: cytomine.local
-  url_upload: upload.cytomine.local
+  url_core: http://cytomine.local
+  url_upload: http://upload.cytomine.local
   commercial_version: CE2023.1
 
 #

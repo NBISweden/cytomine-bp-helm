@@ -20,5 +20,5 @@ data:
     UPLOAD_PATH: /tmp/uploaded
     URLS_CORE: {{ .Values.global.domainName }}
     URLS_IMAGE_SERVER: {{ .Values.global.imsDomainName }}
-    URLS_UPLOAD: {{ .Values.web_ui.url_upload }}
+    URLS_UPLOAD: {{ .Values.global.urlUpload  }}
 {{ end }}

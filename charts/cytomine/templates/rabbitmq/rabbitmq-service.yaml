@@ -15,8 +15,8 @@ spec:
       port: {{ .Values.rabbitmq.managementPort }}
       targetPort: {{ .Values.rabbitmq.managementPort }}
       protocol: TCP
-    - name: empd
-      port: {{ .Values.rabbitmq.empdPort }}
-      targetPort: {{ .Values.rabbitmq.empdPort }}
-      protocol: TCP
+    # - name: empd
+    #   port: {{ .Values.rabbitmq.empdPort }}
+    #   targetPort: {{ .Values.rabbitmq.empdPort }}
+    #   protocol: TCP
 {{ end }}

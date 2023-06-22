@@ -45,8 +45,6 @@ spec:
               secretKeyRef:
                 name: {{ include "cytomine.name" . }}-postgresql-secret
                 key: password
-          # if the persistent volume seems empty, copy the data from the default
-          # to the persistent volume, then start postgres using it.
           ports:
             - name: postgres
               containerPort: 5432

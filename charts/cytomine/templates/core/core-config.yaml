@@ -165,14 +165,14 @@ data:
   INSTANCE_HOST_PHONE_NUMBER: None
   INSTANCE_HOST_SUPPORT_MAIL: None
   REVERSE_PROXY_URL: {{ include "cytomine.name" . }}-nginx
-  SERVER_ID: 69308206-ed7c-454b-90b3-5639377ccd2f
-  INSTANCE_HOST_WEBSITE_URL: http://{{ .Values.global.domainName}}
+  SERVER_ID: {{ .Values.core.server_id }}
+  INSTANCE_HOST_WEBSITE_URL: {{ .Values.web_ui.url_core }}
   JAVAMELODY_PATH: /javamelody-core
   JAVAMELODY_USER: admin
   MONGO_DB_NAME: {{ include "cytomine.name" . }}
   MONGO_HOST: {{ include "cytomine.name" . }}-mongodb
   MONGO_PORT: "{{ .Values.mongodb.port }}"
-  MONGO_USER: mongoadmin
+  MONGO_USER: {{ .Values.mongodb.username }}
   POSTGIS_DB_NAME: {{ .Values.postgresql.user }}
   POSTGIS_HOST: {{ include "cytomine.name" . }}-postgis
   POSTGIS_PORT: "{{ .Values.postgresql.port }}"
@@ -181,9 +181,9 @@ data:
   SMTP_PORT: "{{ .Values.smtpPort }}"
   SMTP_USER: user
   STORAGE_PATH: /data/images
-  URL_CORE: http://{{ .Values.global.domainName}}
-  URL_PIMS1: http://{{ .Values.global.imsDomainName}}
-  URL_PIMS2: http://{{ .Values.global.imsDomainName}}
+  URL_CORE: {{ .Values.web_ui.url_core }}
+  URL_PIMS1: {{ .Values.pims.pims_url }}
+  URL_PIMS2: {{ .Values.pims.pims_url }}
 {{ end }}
 ---
 {{ if .Values.core.deploy }}

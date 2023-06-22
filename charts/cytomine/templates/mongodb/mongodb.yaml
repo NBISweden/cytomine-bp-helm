@@ -41,14 +41,14 @@ spec:
               protocol: TCP
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: mongoadmin
+              value: {{ .Values.mongodb.username }}
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "cytomine.name" . }}-mongodb-secret
                   key: password
             - name: MONGO_INIT_DATABASE
-              value: cytomine
+              value: {{ .Values.mongodb.database }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}

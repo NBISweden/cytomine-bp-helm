@@ -10,8 +10,6 @@ spec:
   ports:
     - name: mongodb
       port: {{ .Values.mongodb.port }}
-      targetPort: {{ .Values.mongodb.port }}
     - name: management
       port: {{ .Values.mongodb.statusPort }}
-      targetPort: {{ .Values.mongodb.statusPort }}
 {{ end }}
