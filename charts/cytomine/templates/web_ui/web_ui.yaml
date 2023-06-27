@@ -32,8 +32,8 @@ spec:
         configMap:
           name: {{ include "cytomine.name" . }}-web-ui-config
       - name: {{ include "cytomine.name" . }}-web-ui-localtime
-        hostPath:
-          path: /etc/localtime
+        configMap:
+          name: {{ include "cytomine.name" . }}-localtime
       containers:
         - name: {{ .Chart.Name }}-web-ui
           image: "{{ .Values.images.web_ui }}"
@@ -48,6 +48,7 @@ spec:
           volumeMounts:
             - name: {{ include "cytomine.name" . }}-web-ui-localtime
               mountPath: /etc/localtime
+              subPath: Europe
             - name: {{ include "cytomine.name" . }}-web-ui-config
               mountPath: /cm_configs/app/configuration.json.sample
               subPath: configuration.json.sample

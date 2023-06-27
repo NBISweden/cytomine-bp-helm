@@ -32,8 +32,8 @@ spec:
         secret:
           secretName: {{ include "cytomine.name" . }}-core-config
       - name: {{ include "cytomine.name" . }}-core-localtime
-        hostPath:
-          path: /etc/localtime
+        configMap:
+          name: {{ include "cytomine.name" . }}-localtime
       containers:
         - name: {{ .Chart.Name }}-core
           image: "{{ .Values.images.core }}"
@@ -52,6 +52,7 @@ spec:
               subPath: logback.xml
             - name: {{ include "cytomine.name" . }}-core-localtime
               mountPath: /etc/localtime
+              subPath: Europe
           ports:
             - name: http
               containerPort: {{ .Values.core.port }}
