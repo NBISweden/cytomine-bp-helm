@@ -33,8 +33,9 @@ spec:
             claimName: {{ template "cytomine.name" . }}-image-claim
       containers:
         - name: {{ .Chart.Name }}-bioformat
-          image: "{{ .Values.bioformat.image.repository }}:{{ .Values.bioformat.image.tag }}"
-          imagePullPolicy: {{ .Values.bioformat.image.pullPolicy }}
+          image: "{{ .Values.images.bioformat }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          command: [ "bash", "/tmp/deploy.sh"]
           volumeMounts:
             - name: images
               mountPath: "/data/images"
@@ -42,8 +43,8 @@ spec:
           - name: BIOFORMAT_PORT
             value: "{{ .Values.bioformat.port }}"
           securityContext:
-            allowPrivilegeEscalation: false
-            privileged: false
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.bioformat.port }}

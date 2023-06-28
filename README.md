@@ -5,21 +5,70 @@ These helm charts will setup a basic cytomine system on a kubernetes host.
 This repository is under active development, and should not be used for
 production systems in its current state.
 
-## Current Limitations
 
+- [Cytomine Helm Chart](#cytomine-helm-chart)
+  - [Development environment](#development-environment)
+    - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
+    - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
+    - [Testing](#testing)
+  - [Short Introduction to Kubernetes and Helm](#short-introduction-to-kubernetes-and-helm)
+    - [Kubernetes](#kubernetes)
+    - [Helm](#helm)
+      - [Installing helm](#installing-helm)
 
-### High priority
+## Development environment
 
-- There are very few security considerations in the system.
-  - communication between services should be encrypted
-  - sensitive data should be stored in secrets
-  - usernames and passwords should be generated in a secure way
+This development environment has been tested in minikube. Instructions for
+installing minikube can be found in the
+[official instructions](https://minikube.sigs.k8s.io/docs/start/).
 
-### Low priority
+### Setting up the environment and starting the minikube cluster on Ubuntu
 
-- The nginx container could possibly be replaced by ingress rules.
+1. Start the minikube and we use calico for the networkpolicy
 
-## Short kubernetes intro
+```
+minikube start --network-plugin=cni --cni=calico
+```
+2. Enable the addons
+```
+minikube addons enable ingress
+minikube addons enable ingress-dns
+```
+3. Add the `minikube-ip` as a DNS server
+```
+echo -e $"\nsearch local\nnameserver $(minikube ip)\ntimeout 5" \
+| sudo tee -a /etc/resolv.conf
+```
+When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
+
+4. Add minikibe 'cytomine domain name ' to host file
+```
+echo -e  $"\n$(minikube ip) cytomine.local\n$(minikube ip) ims.cytomine.local\n$(minikube ip) upload.cytomine.local" \
+| sudo tee -a /etc/hosts
+```
+### Installing the cytomine helm chart
+
+Once all the parts are in place, getting the system running is quite easy!
+
+Run `helm install cytomine .` to install the system with the `cytomine` prefix.
+
+You can use the `kubectl get pods` command to see the kubernetes pods come online.
+It takes 5~6 min to deploy all the pods.If everything works, you should now be able to reach the system in your browser at `cytomine.local`.
+
+Username to login is `admin` and the password can be retrived by running the command:
+```
+kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d
+```
+
+### Testing
+
+Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per
+Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer).
+Currently, in order to be uploaded, DICOM files of WSI need to be placed within a folder, which should then be enclosed within a .zip archive.
+The name of the folder will serve as the slide's name in the frontend.
+
+## Short Introduction to Kubernetes and Helm
+### Kubernetes
 
 Kuberenetes is a system to keep systems running modularly in "pods". A pod is
 basically one-or-more docker containers running together. Kubernetes can do all
@@ -75,79 +124,11 @@ from pods that aren't running.
 which allows us to use templates which will be automatically filled with values.
 This makes management much more convenient.
 
-### Installing helm
+#### Installing helm
 
 Helm is a package manager for kubernetes. It allows us to configure, install and
 uninstall the entire system much easier than using kubernetes to deploy all the
 individual parts. Instructions for installing helm can be found
 [here](https://helm.sh/docs/intro/install).
 
-## Development environment
 
-This development environment has been tested in minikube. Instructions for
-installing minikube can be found in the
-[official instructions](https://minikube.sigs.k8s.io/docs/start/).
-
-Parts of the internal message authentication in cytomine requires that the web
-client runs on a url that's reachable from other containers, making it difficult
-to run on localhost. Because of this you will also need to follow the
-instructions for using the
-[ingress dns](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns)
-add-on.
-
-### Setting up the environment and starting the minikube cluster on OS X
-
-Minikube doesn't seem to be superhappy on OS X, but with a few precautions it
-works!
-
--  If you wish to use the `ingress-dns` addon (which is used in this project),
-   you need to use the `hyperkit` driver (start minikube with:
-   `minikube start --driver=hyperkit`). I tried using the docker driver but
-   couldn't get it to work on my machine.
-
--  Connecting the cisco VPN client seems to mess with minikubes networking. I
-   need to restart minikube every time I need to use the VPN.
-
--  Docker desktop also seems to conflict with minikube, so I can't run both
-   docker and minikube at the same time (unless I use the docker driver, but
-   then ingress-dns doesn't work).
-
-Exactly what settings to use depends on what machine you are running on, but I
-use this for my development:
-
-```
-minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
-```
-
-### Setting up the environment and starting the minikube cluster on Ubuntu
-
-1. Start the minikube
-
-```
-minikube start
-```
-2. Enable the addons
-```
-minikube addons enable ingress
-minikube addons enable ingress-dns
-```
-3. Add the `minikube-ip` as a DNS server
-```
-echo -e $"\nsearch test\nnameserver $(minikube ip)\ntimeout 5" \
-| sudo tee -a /etc/resolv.conf
-```
-When you are done testing cytomine, you can cleanup `resolv.conf` or wait till this is done automatically when the dhcp lease is renewed.
-
-### Installing the cytomine helm chart
-
-Once all the parts are in place, getting the system running is quite easy!
-
-Run `helm install cytomine .` to install the system with the `cytomine` prefix.
-
-You can use the `kubectl get pods` command to see the kubernetes pods come online.
-It takes 5~6 min to deploy all the pods. In case, there is a problem with the rabbitmq deployment. Increase the rabbitmq ram from 256Mi to 386Mi or 512Mi, if you can spare. If everything works, you should now be able to reach the system in your browser at `cytomine.test`.
-
-Username to login is `admin` and the password can be retrived by running the command:
-```
-kubectl -n default get secret/cytomine-core-config -o jsonpath='{.data.cytomineconfig\.groovy}' | base64 -d | grep -oE 'adminPassword="[0-9a-zA-Z]+"'
-```

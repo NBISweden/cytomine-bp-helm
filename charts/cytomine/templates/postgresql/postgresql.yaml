@@ -30,34 +30,25 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-postgis
-          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
-          imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+          image: "{{ .Values.images.postgresql }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           volumeMounts:
             - name: postgres-storage
-              mountPath: "/postgres-data/"
-          command: ["/bin/bash"]
-          # if the persistent volume seems empty, copy the data from the default
-          # to the persistent volume, then start postgres using it.
-          args:
-            - -x
-            - -c
-            - >
-                [ ! -f /postgres-data/main/PG_VERSION ] &&
-                mkdir -p /postgres-data/main &&
-                cp -r /var/lib/postgresql/10/main/* /postgres-data/main &&
-                chmod og-rwx /postgres-data/main;
-                mkdir -p /tmp/pgconf &&
-                cp -r /etc/postgresql/10/main/* /tmp/pgconf &&
-                sed -i -e s,/var/lib/postgresql/10,/postgres-data,
-                /tmp/pgconf/postgresql.conf &&
-                /usr/lib/postgresql/10/bin/postgres -D /postgres-data/main
-                -c config_file=/tmp/pgconf/postgresql.conf
+              mountPath: "/var/lib/postgresql/data"
+          env:
+          - name: POSTGRES_USER
+            value: {{ .Values.postgresql.user }}
+          - name: POSTGRES_DB
+            value: {{ .Values.postgresql.database }}
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cytomine.name" . }}-postgresql-secret
+                key: password
           ports:
             - name: postgres
               containerPort: 5432
               protocol: TCP
-          securityContext:
-             runAsUser: 101
           livenessProbe:
             exec:
               command:

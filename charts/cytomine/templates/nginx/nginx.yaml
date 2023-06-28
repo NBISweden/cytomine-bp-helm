@@ -36,21 +36,23 @@ spec:
           claimName: {{ template "cytomine.name" . }}-temp-image-claim
       containers:
         - name: {{ .Chart.Name }}-nginx
-          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
-          command: ["/usr/local/nginx/sbin/nginx"]
+          image: "{{ .Values.images.nginx }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "cytomine.name" . }}-nginx-global-config
           volumeMounts:
             - name: {{ include "cytomine.name" . }}-nginx-config
-              mountPath: /usr/local/nginx/conf/nginx.conf
-              subPath: nginx.conf
+              mountPath: /cm_configs/etc/nginx/nginx.conf.sample
+              subPath: nginx.conf.sample
             - name: image-temp
               mountPath: "/tmp/uploaded"
-          securityContext:
-            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
-            privileged: {{ .Values.containerSecurity.privileged }}
           ports:
             - name: http
               containerPort: {{ .Values.nginx.port }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

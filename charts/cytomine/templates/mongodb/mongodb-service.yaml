@@ -10,8 +10,6 @@ spec:
   ports:
     - name: mongodb
       port: {{ .Values.mongodb.port }}
-      targetPort: 27017
     - name: management
       port: {{ .Values.mongodb.statusPort }}
-      targetPort: 28017
 {{ end }}

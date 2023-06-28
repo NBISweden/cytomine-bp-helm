@@ -28,30 +28,39 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: singularity-images
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}-singularity-claim
       - name: core-config
         secret:
           secretName: {{ include "cytomine.name" . }}-core-config
+      - name: {{ include "cytomine.name" . }}-core-localtime
+        configMap:
+          name: {{ include "cytomine.name" . }}-localtime
       containers:
         - name: {{ .Chart.Name }}-core
-          image: "{{ .Values.core.image.repository }}:{{ .Values.core.image.tag }}"
-          imagePullPolicy: {{ .Values.core.image.pullPolicy }}
+          image: "{{ .Values.images.core }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: cytomine-core-env
+            - secretRef:
+                name: cytomine-core-secret
           volumeMounts:
             - name: core-config
-              mountPath:  /usr/share/tomcat9/.grails/cytomineconfig.groovy
-              subPath: cytomineconfig.groovy
+              mountPath:  /cm_configs/app/application.yml.sample
+              subPath: application.yml.sample
             - name: core-config
-              mountPath:  /usr/local/tomcat/conf/server.xml
-              subPath: server.xml
-            - name: singularity-images
-              mountPath: "/data/softwares/images"
+              mountPath:  /cm_configs/app/logback.xml
+              subPath: logback.xml
+            - name: {{ include "cytomine.name" . }}-core-localtime
+              mountPath: /etc/localtime
+              subPath: Europe
           ports:
             - name: http
               containerPort: {{ .Values.core.port }}
           resources:
             {{- toYaml .Values.core.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
           livenessProbe:
             httpGet:
               path: /server/ping
@@ -63,7 +72,7 @@ spec:
             httpGet:
               path: /server/ping
               port: 8080
-            initialDelaySeconds: 120
+            initialDelaySeconds: 400
             failureThreshold: 4
             timeoutSeconds: 5
       {{- with .Values.global.tolerations }}

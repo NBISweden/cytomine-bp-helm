@@ -1,25 +1,25 @@
-{{ if .Values.rabbitmq.deploy }}
+{{ if .Values.pims_cache.deploy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cytomine.name" . }}-rabbitmq
+  name: {{ include "cytomine.name" . }}-pims-cache
   labels:
-    role: rabbitmq
+    role: {{ include "cytomine.name" . }}-pims-cache
     app: {{ include "cytomine.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: {{ .Release.Name }}-rabbitmq
+    component: {{ .Release.Name }}-pims-cache
     release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "cytomine.name" . }}-rabbitmq
+      app: {{ template "cytomine.name" . }}-pims-cache
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        role: rabbitmq
-        app: {{ template "cytomine.name" . }}-rabbitmq
+        role: pims-cache
+        app: {{ template "cytomine.name" . }}-pims-cache
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
@@ -28,30 +28,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}-rabbitmq
-          image: "{{ .Values.images.rabbitmq }}"
+        - name: {{ .Chart.Name }}-pims-cache
+          image: "{{ .Values.images.pims_cache }}"
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           ports:
-            - name: amqp
-              containerPort: {{ .Values.rabbitmq.port }}
-              protocol: TCP
-            - name: management
-              containerPort: {{ .Values.rabbitmq.managementPort }}
+            - name: http
+              containerPort: {{ .Values.pims_cache.port }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
           resources:
-            {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
-          livenessProbe:
-            tcpSocket:
-              port: amqp
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
-          readinessProbe:
-            tcpSocket:
-              port: amqp
-            initialDelaySeconds: 30
-            timeoutSeconds: 15
+            {{- toYaml .Values.pims_cache.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
