@@ -8,7 +8,6 @@ production systems in its current state.
 
 - [Cytomine Helm Chart](#cytomine-helm-chart)
   - [Development environment](#development-environment)
-    - [Setting up the environment and starting the minikube cluster on OS X](#setting-up-the-environment-and-starting-the-minikube-cluster-on-os-x)
     - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
     - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
     - [Testing](#testing)
@@ -23,36 +22,12 @@ This development environment has been tested in minikube. Instructions for
 installing minikube can be found in the
 [official instructions](https://minikube.sigs.k8s.io/docs/start/).
 
-### Setting up the environment and starting the minikube cluster on OS X
-
-Minikube doesn't seem to be superhappy on OS X, but with a few precautions it
-works!
-
--  If you wish to use the `ingress-dns` addon (which is used in this project),
-   you need to use the `hyperkit` driver (start minikube with:
-   `minikube start --driver=hyperkit`). I tried using the docker driver but
-   couldn't get it to work on my machine.
-
--  Connecting the cisco VPN client seems to mess with minikubes networking. I
-   need to restart minikube every time I need to use the VPN.
-
--  Docker desktop also seems to conflict with minikube, so I can't run both
-   docker and minikube at the same time (unless I use the docker driver, but
-   then ingress-dns doesn't work).
-
-Exactly what settings to use depends on what machine you are running on, but I
-use this for my development:
-
-```
-minikube start --addons='ingress-dns','ingress','metrics-server' --cpus=3 --memory=8g
-```
-
 ### Setting up the environment and starting the minikube cluster on Ubuntu
 
-1. Start the minikube
+1. Start the minikube and we use calico for the networkpolicy
 
 ```
-minikube start
+minikube start --network-plugin=cni --cni=calico
 ```
 2. Enable the addons
 ```

@@ -9,6 +9,5 @@ spec:
   ports:
     - name: http
       port: {{ .Values.nginx.port }}
-      targetPort: {{ .Values.nginx.port }}
       protocol: TCP
 {{ end }}

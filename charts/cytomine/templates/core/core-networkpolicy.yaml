@@ -40,6 +40,14 @@ spec:
       ports:
         - protocol: {{ .Values.global.protocol }}
           port: {{ .Values.rabbitmq.port }}
+  #Bio-format
+    - to:
+         - podSelector:
+             matchLabels:
+               app: {{ include "cytomine.name" . }}-bioformat
+      ports:
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.bioformat.port }}
   #Ingress-nginx
     - to:
         - namespaceSelector:

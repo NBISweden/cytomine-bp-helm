@@ -9,6 +9,5 @@ spec:
   ports:
     - name: {{ include "cytomine.name" . }}-pims-cache
       port: {{ .Values.pims_cache.port }}
-      targetPort: {{ .Values.pims_cache.port }}
       protocol: TCP
 {{ end }}

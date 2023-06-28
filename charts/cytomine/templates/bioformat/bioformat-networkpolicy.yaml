@@ -5,9 +5,17 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      service: {{ include "cytomine.name" . }}-bioformat
+      app: {{ include "cytomine.name" . }}-bioformat
   policyTypes:
     - Egress
     - Ingress
   ingress:
+  #Core
+  - from:
+      - podSelector:
+          matchLabels:
+            app: {{ include "cytomine.name" . }}-core
+    ports:
+      - protocol: {{ .Values.global.protocol }}
+        port: {{ .Values.bioformat.port }}
   egress:

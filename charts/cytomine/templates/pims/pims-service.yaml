@@ -9,6 +9,5 @@ spec:
   ports:
     - name: http
       port: {{ .Values.pims.port }}
-      targetPort: {{ .Values.pims.port }}
       protocol: TCP
 {{ end }}
