@@ -7,7 +7,7 @@ These helm charts will install a Cytomine system on a kubernetes host and it is 
   - [Development environment](#development-environment)
     - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
     - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
-    - [Testing using BP Dicom File](#testing-using-bp-dicom-file)
+    - [Testing using Bigpicture DICOM File](#testing-using-bigpicture-dicom-file)
   - [Short Introduction to Kubernetes and Helm](#short-introduction-to-kubernetes-and-helm)
     - [Kubernetes](#kubernetes)
     - [Helm](#helm)
@@ -57,7 +57,7 @@ Username to login is `admin` and the password can be retrived by running the com
 kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d
 ```
 
-### Testing using BP Dicom File
+### Testing using Bigpicture DICOM File
 
 Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per
 Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer).
