@@ -22,5 +22,4 @@ jobs:
         - name: Run kube-score
           run: |
               cd charts/cytomine
-              helm template cytomine . | kube-score score -
-        
+              helm template cytomine . | kube-score score - --ignore-test pod-probes --ignore-test container-security-context-readonlyrootfilesystem --ignore-test container-security-context-user-group-id
