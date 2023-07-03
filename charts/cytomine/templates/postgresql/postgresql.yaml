@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "cytomine.name" . }}-postgis
+  annotations:
+    kube-score/ignore: pod-probes
   labels:
     role: postgresql
     app: {{ include "cytomine.name" . }}
@@ -28,6 +30,9 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: temp
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.images.postgresql }}"
@@ -35,6 +40,8 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: "/var/lib/postgresql/data"
+            - name: temp
+              mountPath: /var/run
           env:
           - name: POSTGRES_USER
             value: {{ .Values.postgresql.user }}
@@ -47,7 +54,7 @@ spec:
                 key: password
           ports:
             - name: postgres
-              containerPort: 5432
+              containerPort: {{ .Values.postgresql.port }}
               protocol: TCP
           livenessProbe:
             exec:
@@ -61,6 +68,10 @@ spec:
             timeoutSeconds: 5
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           readinessProbe:
             exec:
               command:

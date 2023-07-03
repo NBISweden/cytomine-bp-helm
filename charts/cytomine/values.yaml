@@ -230,4 +230,5 @@ serviceAccount:
 containerSecurity:
   allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
   privileged: false  # the container is not privileged (usually the default)
+  readOnlyRootFilesystem: true  # the container does not write to the root filesystem
 
