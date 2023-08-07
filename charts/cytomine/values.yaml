@@ -131,11 +131,11 @@ bioformat:
     requests:
       memory: "128Mi"
       cpu: "100m"
-      ephemeral-storage: 32Mi
+      ephemeral-storage: 1Gi
     limits:
       memory: "128Mi"
       cpu: "200m"
-      ephemeral-storage: 32Mi
+      ephemeral-storage: 1Gi
 
 # Core - Main Cytomine Server
 core:

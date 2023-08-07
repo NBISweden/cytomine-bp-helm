@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-web-ui
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: web-ui
     app: {{ include "cytomine.name" . }}
@@ -86,6 +86,9 @@ spec:
       initContainers:
         - name: {{ .Chart.Name }}-web-ui-init
           image: "{{ .Values.images.web_ui }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           command:
             - /bin/sh
             - -c
@@ -95,6 +98,8 @@ spec:
           volumeMounts:
             - name: temp
               mountPath: /fix
+          resources:
+            {{- toYaml .Values.web_ui.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

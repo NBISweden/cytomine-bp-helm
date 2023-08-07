@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-core
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: core
     app: {{ include "cytomine.name" . }}
@@ -89,6 +89,11 @@ spec:
       initContainers:
         - name: {{ .Chart.Name }}-core-init
           image: "{{ .Values.images.core }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           command:
             - /bin/bash
             - -c
@@ -98,6 +103,8 @@ spec:
           volumeMounts:
             - name: temp
               mountPath: /fix/
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

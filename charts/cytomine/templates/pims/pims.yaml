@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-pims
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: pims
     app: {{ include "cytomine.name" . }}
@@ -87,9 +87,16 @@ spec:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          resources:
+            {{- toYaml .Values.pims.resources | nindent 12 }}
       initContainers:
         - name: {{ .Chart.Name }}-pims-init
           image: "{{ .Values.images.pims }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           command:
             - /bin/bash
             - -c

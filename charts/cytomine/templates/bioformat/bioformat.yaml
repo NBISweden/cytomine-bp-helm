@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-bioformat
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 16000
+        runAsGroup: 16000
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -64,9 +67,14 @@ spec:
             initialDelaySeconds: 30
             failureThreshold: 10
             timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.bioformat.resources | nindent 12 }}
       initContainers:
         - name: {{ .Chart.Name }}-bioformat-init
           image: "{{ .Values.images.bioformat }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           command:
             - /bin/bash
             - -c

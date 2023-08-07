@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-nginx
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: nginx
     app: {{ include "cytomine.name" . }}
@@ -78,10 +78,17 @@ spec:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
       initContainers:
         - name: {{ .Chart.Name }}-nginx-init
           image: "{{ .Values.images.nginx }}"
           command: ["/bin/touch", "/fix/nginx.conf"]
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           volumeMounts:
             - name: temp
               mountPath: /fix/
