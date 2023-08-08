@@ -1,16 +1,13 @@
 Cytomine Helm Chart
 ===================
 
-These helm charts will setup a basic cytomine system on a kubernetes host.
-This repository is under active development, and should not be used for
-production systems in its current state.
-
+These helm charts will install a Cytomine system on a kubernetes host and it is built on the Cytomine Community Edition repo - https://github.com/cytomine/Cytomine-community-edition
 
 - [Cytomine Helm Chart](#cytomine-helm-chart)
   - [Development environment](#development-environment)
     - [Setting up the environment and starting the minikube cluster on Ubuntu](#setting-up-the-environment-and-starting-the-minikube-cluster-on-ubuntu)
     - [Installing the cytomine helm chart](#installing-the-cytomine-helm-chart)
-    - [Testing](#testing)
+    - [Testing using Bigpicture DICOM File](#testing-using-bigpicture-dicom-file)
   - [Short Introduction to Kubernetes and Helm](#short-introduction-to-kubernetes-and-helm)
     - [Kubernetes](#kubernetes)
     - [Helm](#helm)
@@ -24,7 +21,7 @@ installing minikube can be found in the
 
 ### Setting up the environment and starting the minikube cluster on Ubuntu
 
-1. Start the minikube and we use calico for the networkpolicy
+1. Start the minikube and we use [calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/minikube) for the networkpolicy
 
 ```
 minikube start --network-plugin=cni --cni=calico
@@ -60,7 +57,7 @@ Username to login is `admin` and the password can be retrived by running the com
 kubectl -n default get secret/cytomine-core-secret -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d
 ```
 
-### Testing
+### Testing using Bigpicture DICOM File
 
 Test the new Cytomine version by uploading a DICOM files available [here](https://cytomine.com/collection/cmu-1/cmu-1-small-region-dicom) as per
 Bigpicture project standard as produced by the [wsidicomizer tool](https://github.com/imi-bigpicture/wsidicomizer).

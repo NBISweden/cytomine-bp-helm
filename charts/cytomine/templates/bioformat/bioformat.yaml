@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-bioformat
+  annotations:
+    kube-score/ignore: pod-probes
   labels:
     role: bioformat
     app: {{ include "cytomine.name" . }}
@@ -22,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-bioformat
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 16000
+        runAsGroup: 16000
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -31,6 +36,8 @@ spec:
         - name: images
           persistentVolumeClaim:
             claimName: {{ template "cytomine.name" . }}-image-claim
+        - name: temp
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-bioformat
           image: "{{ .Values.images.bioformat }}"
@@ -38,13 +45,16 @@ spec:
           command: [ "bash", "/tmp/deploy.sh"]
           volumeMounts:
             - name: images
-              mountPath: "/data/images"
+              mountPath: /data/images
+            - name: temp
+              mountPath: /tmp
           env:
           - name: BIOFORMAT_PORT
             value: "{{ .Values.bioformat.port }}"
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.bioformat.port }}
@@ -57,6 +67,23 @@ spec:
             initialDelaySeconds: 30
             failureThreshold: 10
             timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.bioformat.resources | nindent 12 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-bioformat-init
+          image: "{{ .Values.images.bioformat }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          command:
+            - /bin/bash
+            - -c
+            - >
+              set -x;
+              cp -r /tmp/* /fix/;
+          volumeMounts:
+            - name: temp
+              mountPath: /fix/
           resources:
             {{- toYaml .Values.bioformat.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-web-ui
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: web-ui
     app: {{ include "cytomine.name" . }}
@@ -34,6 +36,8 @@ spec:
       - name: {{ include "cytomine.name" . }}-web-ui-localtime
         configMap:
           name: {{ include "cytomine.name" . }}-localtime
+      - name: temp
+        emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-web-ui
           image: "{{ .Values.images.web_ui }}"
@@ -52,12 +56,48 @@ spec:
             - name: {{ include "cytomine.name" . }}-web-ui-config
               mountPath: /cm_configs/app/configuration.json.sample
               subPath: configuration.json.sample
+            - name: temp
+              mountPath: /tmp
+            - name: temp
+              mountPath: /app
+            - name: temp
+              mountPath: "/var/cache/nginx/client_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/proxy_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/fastcgi_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/uwsgi_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/scgi_temp"
+            - name: temp
+              mountPath: "/var/run"
+            - name: temp
+              mountPath: /etc/nginx/proxy_temp
           ports:
             - name: http
               containerPort: {{ .Values.web_ui.port }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          resources:
+            {{- toYaml .Values.web_ui.resources | nindent 12 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-web-ui-init
+          image: "{{ .Values.images.web_ui }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          command:
+            - /bin/sh
+            - -c
+            - >
+              set -x;
+              cp -r /app/* /fix/;
+          volumeMounts:
+            - name: temp
+              mountPath: /fix
           resources:
             {{- toYaml .Values.web_ui.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

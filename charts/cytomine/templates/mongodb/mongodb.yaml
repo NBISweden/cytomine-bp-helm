@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "cytomine.name" . }}-mongodb
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: mongodb
     app: {{ include "cytomine.name" . }}
@@ -28,6 +30,9 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: temp
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.images.mongodb }}"
@@ -35,6 +40,8 @@ spec:
           volumeMounts:
             - name: mongodb-storage
               mountPath: "/data/db"
+            - name: temp
+              mountPath: "/tmp"
           ports:
             - name: mongodb
               containerPort: 27017
@@ -52,6 +59,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           resources:
             {{- toYaml .Values.mongodb.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}

@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-core
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: core
     app: {{ include "cytomine.name" . }}
@@ -34,6 +36,8 @@ spec:
       - name: {{ include "cytomine.name" . }}-core-localtime
         configMap:
           name: {{ include "cytomine.name" . }}-localtime
+      - name: temp
+        emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-core
           image: "{{ .Values.images.core }}"
@@ -53,6 +57,12 @@ spec:
             - name: {{ include "cytomine.name" . }}-core-localtime
               mountPath: /etc/localtime
               subPath: Europe
+            - name: temp
+              mountPath: /tmp
+            - name: temp
+              mountPath: /app
+            - name: temp
+              mountPath: /javamelody-core
           ports:
             - name: http
               containerPort: {{ .Values.core.port }}
@@ -61,6 +71,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           livenessProbe:
             httpGet:
               path: /server/ping
@@ -72,9 +83,28 @@ spec:
             httpGet:
               path: /server/ping
               port: 8080
-            initialDelaySeconds: 400
+            initialDelaySeconds: 40
             failureThreshold: 4
             timeoutSeconds: 5
+      initContainers:
+        - name: {{ .Chart.Name }}-core-init
+          image: "{{ .Values.images.core }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          command:
+            - /bin/bash
+            - -c
+            - >
+              set -x;
+              cp -r /app/* /fix/;
+          volumeMounts:
+            - name: temp
+              mountPath: /fix/
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

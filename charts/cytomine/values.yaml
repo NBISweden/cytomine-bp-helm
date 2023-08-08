@@ -68,9 +68,11 @@ rabbitmq:
     requests:
       memory: "512Mi"
       cpu: "100m"
+      ephemeral-storage: 32Mi
     limits:
       memory: "512Mi"
       cpu: "400m"
+      ephemeral-storage: 32Mi
 
 # Postgresql - Main database.Stores most of data
 postgresql:
@@ -83,9 +85,11 @@ postgresql:
     requests:
       memory: "256Mi"
       cpu: "50m"
+      ephemeral-storage: 1Gi
     limits:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 1Gi
 
 # MongoDB - Secondary database.Stores activity data
 mongodb:
@@ -99,9 +103,11 @@ mongodb:
     requests:
       memory: "256Mi"
       cpu: "50m"
+      ephemeral-storage: 1Gi
     limits:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 1Gi
 
 # Redis - Cache for fast image extractor
 pims_cache:
@@ -111,9 +117,11 @@ pims_cache:
     requests:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 32Mi
     limits:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 32Mi
 
 # Bioformat - Support for additonal image formats
 bioformat:
@@ -123,9 +131,11 @@ bioformat:
     requests:
       memory: "128Mi"
       cpu: "100m"
+      ephemeral-storage: 1Gi
     limits:
       memory: "128Mi"
       cpu: "200m"
+      ephemeral-storage: 1Gi
 
 # Core - Main Cytomine Server
 core:
@@ -149,9 +159,11 @@ core:
     requests:
       memory: "2Gi"
       cpu: "500m"
+      ephemeral-storage: 32Mi
     limits:
       memory: "2Gi"
       cpu: "500m"
+      ephemeral-storage: 32Mi
 
 # Pims - Main Image Server
 pims:
@@ -164,10 +176,11 @@ pims:
     requests:
       memory: "4Gi"
       cpu: "1000m"
+      ephemeral-storage: 1Gi
     limits:
       memory: "4Gi"
       cpu: "1000m"
-
+      ephemeral-storage: 1Gi
 # Nginx - Main HTTP proxy dispatching incoming requests
 nginx:
   deploy: true
@@ -177,9 +190,11 @@ nginx:
     requests:
       memory: "256Mi"
       cpu: "100m"
+      ephemeral-storage: 32Mi
     limits:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 32Mi
 
 # Web-ui - Cytomine GUI interface
 web_ui:
@@ -189,9 +204,11 @@ web_ui:
     requests:
       memory: "256Mi"
       cpu: "100m"
+      ephemeral-storage: 32Mi
     limits:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: 32Mi
   url_core: http://cytomine.local
   url_upload: http://upload.cytomine.local
   commercial_version: CE2023.1
@@ -213,4 +230,5 @@ serviceAccount:
 containerSecurity:
   allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
   privileged: false  # the container is not privileged (usually the default)
+  readOnlyRootFilesystem: true  # the container does not write to the root filesystem
 

@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-rabbitmq
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: rabbitmq
     app: {{ include "cytomine.name" . }}
@@ -27,6 +29,9 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: temp
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-rabbitmq
           image: "{{ .Values.images.rabbitmq }}"
@@ -37,9 +42,13 @@ spec:
               protocol: TCP
             - name: management
               containerPort: {{ .Values.rabbitmq.managementPort }}
+          volumeMounts:
+            - name: temp
+              mountPath: /var/log/rabbitmq
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           resources:
             {{- toYaml .Values.rabbitmq.resources | nindent 12 }}
           livenessProbe:

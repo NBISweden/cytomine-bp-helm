@@ -23,4 +23,3 @@ jobs:
           run: |
               cd charts/cytomine
               helm template cytomine . | kube-score score -
-        

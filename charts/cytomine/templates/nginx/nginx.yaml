@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-nginx
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: nginx
     app: {{ include "cytomine.name" . }}
@@ -28,15 +30,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: {{ include "cytomine.name" . }}-nginx-config
-        configMap:
-          name: {{ include "cytomine.name" . }}-nginx-config
-      - name: image-temp
-        persistentVolumeClaim:
-          claimName: {{ template "cytomine.name" . }}-temp-image-claim
+        - name: {{ include "cytomine.name" . }}-nginx-config
+          configMap:
+            name: {{ include "cytomine.name" . }}-nginx-config
+        - name: image-temp
+          persistentVolumeClaim:
+            claimName: {{ template "cytomine.name" . }}-temp-image-claim
+        - name: temp
+          emptyDir: {}
       containers:
         - name: {{ .Chart.Name }}-nginx
           image: "{{ .Values.images.nginx }}"
+          workingDir: /tmp
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           envFrom:
             - configMapRef:
@@ -47,12 +52,46 @@ spec:
               subPath: nginx.conf.sample
             - name: image-temp
               mountPath: "/tmp/uploaded"
+            - name: temp
+              mountPath: "/var/cache/nginx/client_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/proxy_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/fastcgi_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/uwsgi_temp"
+            - name: temp
+              mountPath: "/var/cache/nginx/scgi_temp"
+            - name: temp
+              mountPath: "/var/run"
+            - name: temp
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: temp
+              mountPath: /etc/nginx/proxy_temp
+            - name: temp
+              mountPath: /tmp
           ports:
             - name: http
               containerPort: {{ .Values.nginx.port }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-nginx-init
+          image: "{{ .Values.images.nginx }}"
+          command: ["/bin/touch", "/fix/nginx.conf"]
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          volumeMounts:
+            - name: temp
+              mountPath: /fix/
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
