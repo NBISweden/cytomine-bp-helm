@@ -1,0 +1,9 @@
+{{ if .Values.web_ui.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cytomine.name" . }}-web-ui-config
+data:
+  configuration.json.sample: |-
+    {{ (tpl (.Files.Get "configs/web_ui/configuration.json.sample") . ) | nindent 4 }}
+{{ end }}

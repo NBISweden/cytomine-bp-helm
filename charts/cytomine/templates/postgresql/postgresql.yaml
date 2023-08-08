@@ -1,0 +1,99 @@
+{{ if .Values.postgresql.deploy }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "cytomine.name" . }}-postgis
+  annotations:
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
+  labels:
+    role: postgresql
+    app: {{ include "cytomine.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Release.Name }}-postgis
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  serviceName: {{ include "cytomine.name" . }}-postgis
+  selector:
+    matchLabels:
+      app: {{ template "cytomine.name" . }}-postgis
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        role: postgresql
+        app: {{ template "cytomine.name" . }}-postgis
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: temp
+          emptyDir: {}
+      containers:
+        - name: {{ .Chart.Name }}-postgis
+          image: "{{ .Values.images.postgresql }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql/data"
+            - name: temp
+              mountPath: /var/run
+          env:
+          - name: POSTGRES_USER
+            value: {{ .Values.postgresql.user }}
+          - name: POSTGRES_DB
+            value: {{ .Values.postgresql.database }}
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cytomine.name" . }}-postgresql-secret
+                key: password
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgresql.port }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - psql
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.postgresql.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
+            privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          readinessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -h
+              - localhost
+              - -U
+              - psql
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        storageClassName: {{ .Values.readOnceStorageClass }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgresStorage }}
+{{ end }}

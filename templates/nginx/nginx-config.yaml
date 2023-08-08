@@ -1,9 +1,0 @@
-{{ if .Values.nginx.deploy }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "cytomine.name" . }}-nginx-config
-data:
-  nginx.conf: |-
-    {{ (tpl (.Files.Get "configs/nginx.conf") . ) | nindent 4 }}
-{{ end }}
