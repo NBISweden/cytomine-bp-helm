@@ -18,8 +18,6 @@ spec:
       ports:
         - protocol: {{ .Values.global.protocol }}
           port: {{ .Values.pims_cache.port }}
-        - protocol: {{ .Values.global.protocol }}
-          port: {{ .Values.pims.port }}
   #Ingress-nginx
     - to:
         - namespaceSelector:
@@ -30,18 +28,11 @@ spec:
               app: ingress-nginx
       ports:
         - protocol: {{ .Values.global.protocol }}
-          port: 443
-        - protocol: {{ .Values.global.protocol }}
-          port: 80
+          port: {{ .Values.nginx.port }}
   #Minikube IP
     - to:
         - ipBlock:
             cidr: {{ .Values.global.publicIP }}
-      ports:
-        - protocol: {{ .Values.global.protocol }}
-          port: 443
-        - protocol: {{ .Values.global.protocol }}
-          port: 80
   #Kube-system
     - to:
         - namespaceSelector:

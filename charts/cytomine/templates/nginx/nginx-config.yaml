@@ -16,7 +16,7 @@ metadata:
 data:
     INTERNAL_URLS_CORE: {{ include "cytomine.name" . }}-core:8080
     INTERNAL_URLS_IMS: {{ include "cytomine.name" . }}-pims:5000
-    INTERNAL_URLS_WEB_UI: {{ include "cytomine.name" . }}-web-ui
+    INTERNAL_URLS_WEB_UI: {{ include "cytomine.name" . }}-web-ui:{{ .Values.web_ui.port }}
     UPLOAD_PATH: /tmp/uploaded
     URLS_CORE: {{ .Values.global.domainName }}
     URLS_IMAGE_SERVER: {{ .Values.global.imsDomainName }}
