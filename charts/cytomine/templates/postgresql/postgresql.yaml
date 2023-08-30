@@ -56,32 +56,32 @@ spec:
             - name: postgres
               containerPort: {{ .Values.postgresql.port }}
               protocol: TCP
-          livenessProbe:
-            exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - psql
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #     - pg_isready
+          #     - -h
+          #     - localhost
+          #     - -U
+          #     - psql
+          #   initialDelaySeconds: 30
+          #   timeoutSeconds: 5
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
-          readinessProbe:
-            exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - psql
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - pg_isready
+          #     - -h
+          #     - localhost
+          #     - -U
+          #     - psql
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 1
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

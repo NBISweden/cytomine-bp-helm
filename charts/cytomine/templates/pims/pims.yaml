@@ -82,7 +82,7 @@ spec:
               mountPath: /app
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: {{ .Values.pims.port }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}

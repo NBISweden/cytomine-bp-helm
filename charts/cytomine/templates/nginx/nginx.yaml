@@ -83,7 +83,12 @@ spec:
       initContainers:
         - name: {{ .Chart.Name }}-nginx-init
           image: "{{ .Values.images.nginx }}"
-          command: ["/bin/touch", "/fix/nginx.conf"]
+          command:
+            - /bin/sh
+            - -c
+            - >
+              set -x;
+              touch /fix/nginx.conf;
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}

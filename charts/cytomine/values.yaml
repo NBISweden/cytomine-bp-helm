@@ -83,11 +83,11 @@ postgresql:
   password: ZUxoMzJycTY5ckdxb0VUdElXMXl1U2wzZ0ExOHVSMzlpMGhNWjRDOHpvRT0K
   resources:
     requests:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "50m"
       ephemeral-storage: 1Gi
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "200m"
       ephemeral-storage: 1Gi
 
@@ -184,7 +184,7 @@ pims:
 # Nginx - Main HTTP proxy dispatching incoming requests
 nginx:
   deploy: true
-  port: 80
+  port: 9000
   serverID: null
   resources:
     requests:

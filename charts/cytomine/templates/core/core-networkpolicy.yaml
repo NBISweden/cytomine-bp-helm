@@ -80,5 +80,3 @@ spec:
       ports:
         - protocol: {{ .Values.global.protocol }}
           port: {{ .Values.core.port }}
-        - protocol: {{ .Values.global.protocol }}
-          port: {{ .Values.nginx.port }}
