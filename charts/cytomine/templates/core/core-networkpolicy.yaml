@@ -24,6 +24,13 @@ spec:
     - to:
         - ipBlock:
             cidr: {{ .Values.global.publicIP }}
+      ports:
+        - protocol: {{ .Values.global.protocol }}
+          port: 443
+        - protocol: {{ .Values.global.protocol }}
+          port: 80
+        - protocol: {{ .Values.global.protocol }}
+          port: {{.Values.nginx.port }}
   #Postgres
     - to:
          - podSelector:
@@ -59,6 +66,10 @@ spec:
       ports:
         - protocol: {{ .Values.global.protocol }}
           port: {{ .Values.nginx.port }}
+        - protocol: {{ .Values.global.protocol }}
+          port: 443
+        - protocol: {{ .Values.global.protocol }}
+          port: 80
   #Kube-system
     - to:
         - namespaceSelector:
