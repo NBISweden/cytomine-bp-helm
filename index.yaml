@@ -3,6 +3,16 @@ entries:
   cytomine:
   - apiVersion: v2
     appVersion: v4.3.6
+    created: "2023-09-06T13:55:24.808239847Z"
+    description: A Helm chart for installing the Cytomine system
+    digest: 9bc2fafe2bd5b67f2d27d56b0a7d988ecce10b85e2c1c96823d6b4b9fbe35fa2
+    name: cytomine
+    type: application
+    urls:
+    - https://github.com/NBISweden/cytomine-bp-helm/releases/download/cytomine-1.2.0/cytomine-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
+    appVersion: v4.3.6
     created: "2023-08-08T11:50:24.924822405Z"
     description: A Helm chart for installing the Cytomine system
     digest: dc4f606d6effba7d0e706b64a75b3e3bcb819654b8da9047d8bb3b4643aed20b
@@ -31,4 +41,4 @@ entries:
     urls:
     - https://github.com/NBISweden/cytomine-bp-helm/releases/download/cytomine-0.4.0/cytomine-0.4.0.tgz
     version: 0.4.0
-generated: "2023-08-08T11:50:24.924839405Z"
+generated: "2023-09-06T13:55:24.808255947Z"
