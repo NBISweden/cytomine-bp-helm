@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-bioformat
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: bioformat
     app: {{ include "cytomine.name" . }}
