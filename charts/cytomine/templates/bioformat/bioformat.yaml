@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-bioformat
   annotations:
-    kube-score/ignore: pod-probes,container-security-context-user-group-id
+    kube-score/ignore: pod-probes
   labels:
     role: bioformat
     app: {{ include "cytomine.name" . }}
@@ -26,6 +26,7 @@ spec:
     spec:
       securityContext:
         runAsUser: {{ .Values.containerSecurity.userID }}
+        runAsGroup: {{ .Values.containerSecurity.groupID }}
         fsGroup: {{ .Values.containerSecurity.fsgroupID }}
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}

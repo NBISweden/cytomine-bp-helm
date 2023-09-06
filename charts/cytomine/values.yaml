@@ -232,5 +232,6 @@ containerSecurity:
   privileged: false  # the container is not privileged (usually the default)
   readOnlyRootFilesystem: true  # the container does not write to the root filesystem
   userID: 20000
+  groupID: 20000
   fsgroupID: 20000
 
