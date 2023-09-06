@@ -6,8 +6,6 @@ metadata:
 data:
   nginx.conf.sample: |-
     {{ (tpl (.Files.Get "configs/nginx.conf.sample") . ) | nindent 4 }}
-  # nginx.conf: |-
-  #   {{ (tpl (.Files.Get "configs/nginx/nginx.conf") . ) | nindent 4 }}
 {{ end }}
 ---
 {{ if .Values.nginx.deploy }}

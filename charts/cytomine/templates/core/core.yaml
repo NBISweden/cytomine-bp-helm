@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-core
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 20000
+        fsGroup: 20000
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -83,7 +86,7 @@ spec:
             httpGet:
               path: /server/ping
               port: 8080
-            initialDelaySeconds: 40
+            initialDelaySeconds: 600
             failureThreshold: 4
             timeoutSeconds: 5
       initContainers:

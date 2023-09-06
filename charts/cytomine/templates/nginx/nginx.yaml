@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-nginx
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 20000
+        fsGroup: 20000
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -65,8 +68,8 @@ spec:
             - name: temp
               mountPath: "/var/run"
             - name: temp
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
+              mountPath: /etc/nginx
+              subPath: nginx
             - name: temp
               mountPath: /etc/nginx/proxy_temp
             - name: temp
@@ -88,12 +91,11 @@ spec:
             - -c
             - >
               set -x;
-              touch /fix/nginx.conf;
+              cp -R /etc/nginx /fix && chown -R 20000:20000 /fix/nginx;
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
-            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           volumeMounts:
             - name: temp
               mountPath: /fix/

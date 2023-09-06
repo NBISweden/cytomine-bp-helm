@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-rabbitmq
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 20000
+        fsGroup: 20000
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
