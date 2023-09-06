@@ -96,6 +96,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           volumeMounts:
             - name: temp
               mountPath: /fix/
