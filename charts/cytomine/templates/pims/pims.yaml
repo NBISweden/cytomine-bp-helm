@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-pims
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.containerSecurity.userID }}
+        fsGroup: {{ .Values.containerSecurity.fsgroupID }}
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -82,7 +85,7 @@ spec:
               mountPath: /app
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: {{ .Values.pims.port }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}

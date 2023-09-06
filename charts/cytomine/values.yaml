@@ -83,11 +83,11 @@ postgresql:
   password: ZUxoMzJycTY5ckdxb0VUdElXMXl1U2wzZ0ExOHVSMzlpMGhNWjRDOHpvRT0K
   resources:
     requests:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "50m"
       ephemeral-storage: 1Gi
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "200m"
       ephemeral-storage: 1Gi
 
@@ -184,7 +184,7 @@ pims:
 # Nginx - Main HTTP proxy dispatching incoming requests
 nginx:
   deploy: true
-  port: 80
+  port: 9000
   serverID: null
   resources:
     requests:
@@ -199,7 +199,7 @@ nginx:
 # Web-ui - Cytomine GUI interface
 web_ui:
   deploy: true
-  port: 80
+  port: 9090
   resources:
     requests:
       memory: "256Mi"
@@ -231,4 +231,7 @@ containerSecurity:
   allowPrivilegeEscalation: false  # do not allow the container to switch to a user with more permissions
   privileged: false  # the container is not privileged (usually the default)
   readOnlyRootFilesystem: true  # the container does not write to the root filesystem
+  userID: 20000
+  groupID: 20000
+  fsgroupID: 20000
 

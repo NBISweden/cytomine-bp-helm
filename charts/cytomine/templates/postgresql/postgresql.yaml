@@ -42,6 +42,8 @@ spec:
               mountPath: "/var/lib/postgresql/data"
             - name: temp
               mountPath: /var/run
+            - name: temp
+              mountPath: /tmp
           env:
           - name: POSTGRES_USER
             value: {{ .Values.postgresql.user }}
@@ -56,32 +58,30 @@ spec:
             - name: postgres
               containerPort: {{ .Values.postgresql.port }}
               protocol: TCP
-          livenessProbe:
-            exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - psql
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
-          readinessProbe:
-            exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - psql
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            runAsUser: 999
+      initContainers:
+        - name: {{ .Chart.Name }}-postgis-init
+          image: "{{ .Values.images.postgresql }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql/data"
+          command:
+            - /bin/sh
+            - -c
+            - >
+              set -x;
+              chown -R 999:999 /var/lib/postgresql/data;
+          resources:
+            {{- toYaml .Values.postgresql.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

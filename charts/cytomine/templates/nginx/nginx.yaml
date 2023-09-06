@@ -24,6 +24,9 @@ spec:
         app: {{ template "cytomine.name" . }}-nginx
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: {{ .Values.containerSecurity.userID }}
+        fsGroup: {{ .Values.containerSecurity.fsgroupID }}
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -65,8 +68,8 @@ spec:
             - name: temp
               mountPath: "/var/run"
             - name: temp
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
+              mountPath: /etc/nginx
+              subPath: nginx
             - name: temp
               mountPath: /etc/nginx/proxy_temp
             - name: temp
@@ -83,7 +86,12 @@ spec:
       initContainers:
         - name: {{ .Chart.Name }}-nginx-init
           image: "{{ .Values.images.nginx }}"
-          command: ["/bin/touch", "/fix/nginx.conf"]
+          command:
+            - /bin/sh
+            - -c
+            - >
+              set -x;
+              cp -R /etc/nginx /fix && chown -R 20000:20000 /fix/nginx;
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           securityContext:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}

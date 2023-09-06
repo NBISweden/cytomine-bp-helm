@@ -17,6 +17,6 @@ spec:
               app: {{ include "cytomine.name" . }}-nginx
       ports:
         - protocol: {{ .Values.global.protocol }}
-          port: {{ .Values.nginx.port }}
+          port: {{ .Values.web_ui.port }}
 
 

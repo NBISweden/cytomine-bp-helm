@@ -6,4 +6,6 @@ metadata:
 data:
   configuration.json.sample: |-
     {{ (tpl (.Files.Get "configs/web_ui/configuration.json.sample") . ) | nindent 4 }}
+  nginx.conf: |-
+    {{ (tpl (.Files.Get "configs/web_ui/nginx.conf") . ) | nindent 4 }}
 {{ end }}

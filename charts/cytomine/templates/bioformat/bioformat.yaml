@@ -25,8 +25,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       securityContext:
-        runAsUser: 16000
-        runAsGroup: 16000
+        runAsUser: {{ .Values.containerSecurity.userID }}
+        runAsGroup: {{ .Values.containerSecurity.groupID }}
+        fsGroup: {{ .Values.containerSecurity.fsgroupID }}
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:

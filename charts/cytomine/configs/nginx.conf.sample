@@ -43,7 +43,7 @@
 
         server {
             client_max_body_size 0;
-            listen       80;
+            listen       9000;
             server_name  $URLS_CORE;
 
             location / {
@@ -106,7 +106,7 @@
         }
         server {
             client_max_body_size 0;
-            listen       80;
+            listen       9000;
             server_name  $URLS_IMAGE_SERVER;
 
             location / {
@@ -118,7 +118,7 @@
         server {
             client_max_body_size 0;
             proxy_request_buffering off;
-            listen       80;
+            listen       9000;
             server_name  $URLS_UPLOAD;
 
             # Upload form should be submitted to this location

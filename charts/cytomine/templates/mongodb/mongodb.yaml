@@ -33,6 +33,9 @@ spec:
       volumes:
         - name: temp
           emptyDir: {}
+      securityContext:
+        runAsUser: {{ .Values.containerSecurity.userID }}
+        fsGroup: {{ .Values.containerSecurity.fsgroupID }}
       containers:
         - name: {{ .Chart.Name }}-mongodb
           image: "{{ .Values.images.mongodb }}"
