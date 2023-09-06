@@ -80,6 +80,8 @@ spec:
             - >
               set -x;
               chown -R 999:999 /var/lib/postgresql/data;
+          resources:
+            {{- toYaml .Values.postgresql.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
