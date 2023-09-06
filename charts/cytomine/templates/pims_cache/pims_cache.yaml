@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "cytomine.name" . }}-pims-cache
   annotations:
-    kube-score/ignore: pod-probes
+    kube-score/ignore: pod-probes,container-security-context-user-group-id
   labels:
     role: {{ include "cytomine.name" . }}-pims-cache
     app: {{ include "cytomine.name" . }}
