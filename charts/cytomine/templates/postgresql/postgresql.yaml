@@ -40,6 +40,7 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: "/var/lib/postgresql/data"
+              subPath: data
             - name: postgres-storage
               mountPath: "/var/lib/postgresql"
             - name: temp
@@ -69,20 +70,20 @@ spec:
             runAsUser: 999
       initContainers:
         - name: {{ .Chart.Name }}-postgis-init
-          image: "{{ .Values.images.postgresql }}"
+          image: alpine
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           securityContext:
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           volumeMounts:
             - name: postgres-storage
-              mountPath: "/var/lib/postgresql/data"
+              mountPath: "/var/lib/postgresql/"
           command:
             - /bin/sh
             - -c
             - >
               set -x;
-              chown -R 999 /var/lib/postgresql/data;
-              chmod og-rwx /var/lib/postgresql/data;
+              mkdir -p /var/lib/postgresql/data;
+              chown -R 999 /var/lib/postgresql/data && chmod og-rwx /var/lib/postgresql/data;
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
