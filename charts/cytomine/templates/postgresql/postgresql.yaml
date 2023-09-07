@@ -70,7 +70,7 @@ spec:
             runAsUser: 999
       initContainers:
         - name: {{ .Chart.Name }}-postgis-init
-          image: alpine
+          image: alpine:3.18
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           securityContext:
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
