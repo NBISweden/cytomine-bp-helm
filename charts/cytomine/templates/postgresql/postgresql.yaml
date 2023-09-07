@@ -40,6 +40,8 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: "/var/lib/postgresql/data"
+            - name: postgres-storage
+              mountPath: "/var/lib/postgresql"
             - name: temp
               mountPath: /var/run
             - name: temp
@@ -79,7 +81,8 @@ spec:
             - -c
             - >
               set -x;
-              chown -R 999:999 /var/lib/postgresql/data;
+              chown -R 999 /var/lib/postgresql/data;
+              chmod og-rwx /var/lib/postgresql/data;
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
       {{- with .Values.global.tolerations }}
