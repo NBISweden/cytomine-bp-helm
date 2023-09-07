@@ -25,6 +25,8 @@ spec:
         app: {{ template "cytomine.name" . }}-postgis
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 999
       serviceAccountName: {{ include "cytomine.serviceAccountName" . }}
       {{- with .Values.global.affinity }}
       affinity:
@@ -67,7 +69,6 @@ spec:
             allowPrivilegeEscalation: {{ .Values.containerSecurity.allowPrivilegeEscalation }}
             privileged: {{ .Values.containerSecurity.privileged }}
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
-            runAsUser: 999
       initContainers:
         - name: {{ .Chart.Name }}-postgis-init
           image: alpine:3.18
