@@ -205,6 +205,6 @@ stringData:
   IMAGE_SERVER_PUBLIC_KEY: {{ .Values.core.image_server_public_key }}
   SMTP_PASSWORD: {{ .Values.core.smtp_password }}
   JAVAMELODY_PASS: {{ .Values.core.javamelody_password }}
-  POSTGIS_PASS:  {{ .Values.core.postgis_password }}
+  POSTGIS_PASS:  {{ .Values.postgresql.password }}
   MONGO_PASS: {{ .Values.mongodb.password }}
 {{ end }}

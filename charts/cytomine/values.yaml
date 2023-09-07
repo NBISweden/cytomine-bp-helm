@@ -154,7 +154,6 @@ core:
   javamelody_password: iAWYk+Nc48XZToZ/z91R1hzhtoTgqJgxnq8mDa+I6Uo=
   smtp_password: password
   server_id: 69308206-ed7c-454b-90b3-5639377ccd2f
-  postgis_password: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
   resources:
     requests:
       memory: "2Gi"
