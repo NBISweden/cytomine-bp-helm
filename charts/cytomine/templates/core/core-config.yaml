@@ -166,7 +166,7 @@ data:
   INSTANCE_HOST_SUPPORT_MAIL: None
   REVERSE_PROXY_URL: "{{ include "cytomine.name" . }}-nginx:{{ .Values.nginx.port }}"
   SERVER_ID: {{ .Values.core.server_id }}
-  INSTANCE_HOST_WEBSITE_URL: "{{ .Values.web_ui.url_core }}:{{ .Values.web_ui.port }}"
+  INSTANCE_HOST_WEBSITE_URL: "{{ .Values.web_ui.url_core }}"
   JAVAMELODY_PATH: /javamelody-core
   JAVAMELODY_USER: admin
   MONGO_DB_NAME: {{ include "cytomine.name" . }}
