@@ -40,5 +40,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.global.domainName }}
+    - {{ .Values.global.urlUpload }}
+    - {{ .Values.global.imsDomainName }}
     secretName: {{ include "cytomine.name" . }}-ingress-tls
   {{ end }}
