@@ -159,11 +159,11 @@ core:
     requests:
       memory: "2Gi"
       cpu: "500m"
-      ephemeral-storage: 32Mi
+      ephemeral-storage: 1Gi
     limits:
       memory: "2Gi"
       cpu: "500m"
-      ephemeral-storage: 32Mi
+      ephemeral-storage: 1Gi
 
 # Pims - Main Image Server
 pims:
