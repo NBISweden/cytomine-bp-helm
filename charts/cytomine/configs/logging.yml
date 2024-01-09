@@ -11,16 +11,18 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
+    level: DEBUG
     formatter: complete
 
 loggers:
   pims:
+    handlers: [console]
     level: DEBUG
   pims.app:
+    handlers: [console]
     level: DEBUG
   pims.cytomine:
-    level: CRITICAL
+    level: DEBUG
     handlers: [console]
     propagate: false
   pyvips:
@@ -34,7 +36,8 @@ loggers:
 #  gunicorn.error:
 #    propagate: true
   cytomine.client:
-    level: INFO
+    handlers: [console]
+    level: DEBUG
 
 root:
   handlers: [console]
