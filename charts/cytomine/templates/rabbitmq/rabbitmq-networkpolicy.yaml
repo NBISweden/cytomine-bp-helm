@@ -17,5 +17,12 @@ spec:
       ports:
         - protocol: {{ .Values.global.protocol }}
           port: {{ .Values.mongodb.port }}
+    - from:
+        - podSelector:
+            matchLabels:
+              app: {{ include "cytomine.name" . }}-pims
+      ports:
+        - protocol: {{ .Values.global.protocol }}
+          port: {{ .Values.mongodb.port }}
   egress:
 
