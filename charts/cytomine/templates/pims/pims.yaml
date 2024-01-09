@@ -74,6 +74,8 @@ spec:
           volumeMounts:
             - name: images
               mountPath: "/data/images"
+            - name: images
+              mountPath: "/data/pims"
             - name: image-temp
               mountPath: "/tmp/uploaded"
             - name: pims-logging
