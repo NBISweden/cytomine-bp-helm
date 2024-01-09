@@ -35,6 +35,9 @@ spec:
       volumes:
         - name: temp
           emptyDir: {}
+        - name: postgres-secret
+          secret:
+            secretName: {{ include "cytomine.name" . }}-postgresql-secret
       containers:
         - name: {{ .Chart.Name }}-postgis
           image: "{{ .Values.images.postgresql }}"
@@ -45,6 +48,9 @@ spec:
               subPath: data
             - name: postgres-storage
               mountPath: "/var/lib/postgresql"
+            - name: postgres-secret
+              mountPath: "/docker-entrypoint-initdb.d/13_cytomine_user_docker.sql"
+              subPath: pg_dockeruser.sql
             - name: temp
               mountPath: /var/run
             - name: temp
