@@ -80,7 +80,7 @@ postgresql:
   port: 5432
   user: docker
   database: docker
-  password: ZUxoMzJycTY5ckdxb0VUdElXMXl1U2wzZ0ExOHVSMzlpMGhNWjRDOHpvRT0K
+  password: eLh32rq69rGqoETtIW1yuSl3gA18uR39i0hMZ4C8zoE=
   resources:
     requests:
       memory: "512Mi"
