@@ -9,11 +9,16 @@ data:
     LOG_CONFIG_FILE: /app/logging.yml
     MAX_REQUESTS: "0"
     OUTPUT_SIZE_LIMIT: "10000"
-    WEB_CONCURRENCY: "16"
+    WEB_CONCURRENCY: "1"
+    MAX_WORKERS: "1"
+    MPLCONFIGDIR: "/tmp"
     cache_enabled: "True"
     task_queue_enabled: "False"
+    TASK_QUEUE_ENABLED: "False"
+    TASK_QUEUE_URL: {{ include "cytomine.name" . }}-rabbitmq:{{ .Values.rabbitmq.port }}
     PENDING_PATH: /tmp/uploaded
     PIMS_URL: {{ .Values.pims.pims_url }}
+    cache_url: redis://{{ include "cytomine.name" . }}-pims-cache:{{ .Values.pims_cache.port }}
     ROOT: /data/images
 {{ end }}
 ---

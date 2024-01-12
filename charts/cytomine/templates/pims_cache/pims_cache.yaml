@@ -46,8 +46,14 @@ spec:
             readOnlyRootFilesystem: {{ .Values.containerSecurity.readOnlyRootFilesystem }}
           resources:
             {{- toYaml .Values.pims_cache.resources | nindent 12 }}
+          volumeMounts:
+            - name: tempdata
+              mountPath: "/data"
       {{- with .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: tempdata
+          emptyDir: {}
 {{ end }}
